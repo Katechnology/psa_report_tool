@@ -62,17 +62,37 @@ def employee():
             # Get Bangkok time
             bangkok_now = get_bangkok_now()
             
-            # Create new report
+            # Create new report with all fields
             report = DailyReport(
                 report_date=bangkok_now.date(),
                 created_at=bangkok_now.replace(tzinfo=None),  # Store without timezone
+                
+                # Required fields
                 employee_name=request.form.get('employee_name', '').strip(),
                 brand=request.form.get('brand', '').strip(),
-                new_sales=float(request.form.get('new_sales', 0) or 0),
+                current_balance=float(request.form.get('current_balance', 0) or 0),
+                
+                # Account Status (required)
+                account_status_us=request.form.get('account_status_us', 'Healthy'),
+                account_status_mexico=request.form.get('account_status_mexico', 'Healthy'),
+                account_status_canada=request.form.get('account_status_canada', 'Healthy'),
+                
+                # Store Status (required)
+                store_status_us=request.form.get('store_status_us', 'Active'),
+                store_status_mexico=request.form.get('store_status_mexico', 'Active'),
+                store_status_canada=request.form.get('store_status_canada', 'Active'),
+                
+                # Optional fields
+                new_orders=int(request.form.get('new_orders', 0) or 0),
+                vine_total_orders=int(request.form.get('vine_total_orders', 0) or 0),
+                new_reviews=int(request.form.get('new_reviews', 0) or 0),
+                average_rating=float(request.form.get('average_rating', 0) or 0),
+                main_niche_ranking=int(request.form.get('main_niche_ranking', 0) or 0),
+                sub_niche_ranking=int(request.form.get('sub_niche_ranking', 0) or 0),
+                ads_spend_total=float(request.form.get('ads_spend_total', 0) or 0),
+                ads_sales_total=float(request.form.get('ads_sales_total', 0) or 0),
                 acos=float(request.form.get('acos', 0) or 0),
-                ads_spend=float(request.form.get('ads_spend', 0) or 0),
-                current_inventory=int(request.form.get('current_inventory', 0) or 0),
-                account_status=request.form.get('account_status', 'Healthy')
+                impressions=int(request.form.get('impressions', 0) or 0)
             )
             
             # Validate required fields
@@ -228,19 +248,31 @@ def export_csv():
         flash('No data to export.', 'info')
         return redirect(url_for('manager_overall'))
     
-    # Convert to DataFrame
+    # Convert to DataFrame with all fields
     data = []
     for r in reports:
         data.append({
             'report_date': r.report_date.strftime('%d/%m/%Y'),
+            'created_at': r.created_at.strftime('%d/%m/%Y %H:%M:%S'),
             'employee_name': r.employee_name,
             'brand': r.brand,
-            'new_sales': r.new_sales,
+            'current_balance': r.current_balance,
+            'new_orders': r.new_orders,
+            'vine_total_orders': r.vine_total_orders,
+            'new_reviews': r.new_reviews,
+            'average_rating': r.average_rating,
+            'main_niche_ranking': r.main_niche_ranking,
+            'sub_niche_ranking': r.sub_niche_ranking,
+            'ads_spend_total': r.ads_spend_total,
+            'ads_sales_total': r.ads_sales_total,
             'acos': r.acos,
-            'ads_spend': r.ads_spend,
-            'current_inventory': r.current_inventory,
-            'account_status': r.account_status,
-            'created_at': r.created_at.strftime('%d/%m/%Y %H:%M:%S')
+            'impressions': r.impressions,
+            'account_status_us': r.account_status_us,
+            'account_status_mexico': r.account_status_mexico,
+            'account_status_canada': r.account_status_canada,
+            'store_status_us': r.store_status_us,
+            'store_status_mexico': r.store_status_mexico,
+            'store_status_canada': r.store_status_canada
         })
     
     df = pd.DataFrame(data)
@@ -268,10 +300,10 @@ def generate_daily_charts(reports):
     
     # Aggregate by brand
     agg_df = df.groupby('brand').agg({
-        'new_sales': 'sum',
-        'ads_spend': 'sum',
-        'acos': 'mean',
-        'current_inventory': 'last'  # Use latest inventory
+        'current_balance': 'sum',
+        'new_orders': 'sum',
+        'ads_spend_total': 'sum',
+        'acos': 'mean'
     }).reset_index()
     
     charts = {}
@@ -279,9 +311,9 @@ def generate_daily_charts(reports):
     # Color scheme
     colors = px.colors.qualitative.Set2
     
-    # New Sales by Brand
-    fig1 = px.bar(agg_df, x='brand', y='new_sales', 
-                  title='New Sales by Brand',
+    # Current Balance by Brand
+    fig1 = px.bar(agg_df, x='brand', y='current_balance', 
+                  title='Current Balance by Brand ($)',
                   color='brand', color_discrete_sequence=colors)
     fig1.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
@@ -289,11 +321,11 @@ def generate_daily_charts(reports):
         font_color='#ffffff',
         showlegend=False
     )
-    charts['new_sales'] = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['balance'] = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # ACOS by Brand
-    fig2 = px.bar(agg_df, x='brand', y='acos', 
-                  title='Average ACOS by Brand (%)',
+    # New Orders by Brand
+    fig2 = px.bar(agg_df, x='brand', y='new_orders', 
+                  title='New Orders by Brand',
                   color='brand', color_discrete_sequence=colors)
     fig2.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
@@ -301,11 +333,11 @@ def generate_daily_charts(reports):
         font_color='#ffffff',
         showlegend=False
     )
-    charts['acos'] = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['orders'] = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     
     # Ads Spend by Brand
-    fig3 = px.bar(agg_df, x='brand', y='ads_spend', 
-                  title='Ads Spend by Brand ($)',
+    fig3 = px.bar(agg_df, x='brand', y='ads_spend_total', 
+                  title='Ads Spend Total by Brand ($)',
                   color='brand', color_discrete_sequence=colors)
     fig3.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
@@ -315,9 +347,9 @@ def generate_daily_charts(reports):
     )
     charts['ads_spend'] = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # Inventory by Brand
-    fig4 = px.bar(agg_df, x='brand', y='current_inventory', 
-                  title='Current Inventory by Brand',
+    # ACOS by Brand
+    fig4 = px.bar(agg_df, x='brand', y='acos', 
+                  title='Average ACOS by Brand (%)',
                   color='brand', color_discrete_sequence=colors)
     fig4.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
@@ -325,7 +357,7 @@ def generate_daily_charts(reports):
         font_color='#ffffff',
         showlegend=False
     )
-    charts['inventory'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['acos'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     
     return charts
 
@@ -341,10 +373,10 @@ def generate_brand_charts(reports, brand):
     
     # Aggregate by date (in case multiple entries per day)
     agg_df = df.groupby('date').agg({
-        'new_sales': 'sum',
-        'ads_spend': 'sum',
-        'acos': 'mean',
-        'current_inventory': 'last'
+        'current_balance': 'sum',
+        'new_orders': 'sum',
+        'ads_spend_total': 'sum',
+        'acos': 'mean'
     }).reset_index()
     
     agg_df = agg_df.sort_values('date')
@@ -355,9 +387,9 @@ def generate_brand_charts(reports, brand):
     # Line chart styling
     line_color = '#00d4ff'
     
-    # New Sales over time
-    fig1 = px.line(agg_df, x='date_str', y='new_sales', 
-                   title=f'{brand} - New Sales Over Time',
+    # Current Balance over time
+    fig1 = px.line(agg_df, x='date_str', y='current_balance', 
+                   title=f'{brand} - Balance Over Time ($)',
                    markers=True)
     fig1.update_traces(line_color=line_color, marker_color=line_color)
     fig1.update_layout(
@@ -365,26 +397,26 @@ def generate_brand_charts(reports, brand):
         plot_bgcolor='rgba(0,0,0,0)',
         font_color='#ffffff',
         xaxis_title='Date',
-        yaxis_title='New Sales'
+        yaxis_title='Balance ($)'
     )
-    charts['new_sales'] = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['balance'] = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # ACOS over time
-    fig2 = px.line(agg_df, x='date_str', y='acos', 
-                   title=f'{brand} - ACOS Over Time (%)',
+    # New Orders over time
+    fig2 = px.line(agg_df, x='date_str', y='new_orders', 
+                   title=f'{brand} - Orders Over Time',
                    markers=True)
-    fig2.update_traces(line_color='#ff6b6b', marker_color='#ff6b6b')
+    fig2.update_traces(line_color='#6bcb77', marker_color='#6bcb77')
     fig2.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font_color='#ffffff',
         xaxis_title='Date',
-        yaxis_title='ACOS (%)'
+        yaxis_title='Orders'
     )
-    charts['acos'] = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['orders'] = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     
     # Ads Spend over time
-    fig3 = px.line(agg_df, x='date_str', y='ads_spend', 
+    fig3 = px.line(agg_df, x='date_str', y='ads_spend_total', 
                    title=f'{brand} - Ads Spend Over Time ($)',
                    markers=True)
     fig3.update_traces(line_color='#ffd93d', marker_color='#ffd93d')
@@ -397,26 +429,28 @@ def generate_brand_charts(reports, brand):
     )
     charts['ads_spend'] = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # Inventory over time
-    fig4 = px.line(agg_df, x='date_str', y='current_inventory', 
-                   title=f'{brand} - Inventory Over Time',
+    # ACOS over time
+    fig4 = px.line(agg_df, x='date_str', y='acos', 
+                   title=f'{brand} - ACOS Over Time (%)',
                    markers=True)
-    fig4.update_traces(line_color='#6bcb77', marker_color='#6bcb77')
+    fig4.update_traces(line_color='#ff6b6b', marker_color='#ff6b6b')
     fig4.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font_color='#ffffff',
         xaxis_title='Date',
-        yaxis_title='Inventory'
+        yaxis_title='ACOS (%)'
     )
-    charts['inventory'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['acos'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     
     return charts
 
 
+# =============================================================================
 # =============================================================================
 # RUN APPLICATION
 # =============================================================================
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+

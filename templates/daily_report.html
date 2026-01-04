@@ -57,32 +57,48 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th>Time</th>
                         <th>Employee</th>
                         <th>Brand</th>
-                        <th>New Sales</th>
-                        <th>ACOS</th>
+                        <th>Balance</th>
+                        <th>Orders</th>
+                        <th>Rating</th>
                         <th>Ads Spend</th>
-                        <th>Inventory</th>
-                        <th>Status</th>
-                        <th>Time</th>
+                        <th>ACOS</th>
+                        <th>US Acc</th>
+                        <th>MX Acc</th>
+                        <th>CA Acc</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report in reports %}
                     <tr>
+                        <td class="time-cell">{{ report.created_at.strftime('%H:%M') }}</td>
                         <td>{{ report.employee_name }}</td>
                         <td><span class="brand-badge">{{ report.brand }}</span></td>
-                        <td class="number-cell">${{ "%.2f"|format(report.new_sales) }}</td>
-                        <td class="number-cell">{{ "%.2f"|format(report.acos) }}%</td>
-                        <td class="number-cell">${{ "%.2f"|format(report.ads_spend) }}</td>
-                        <td class="number-cell">{{ report.current_inventory }}</td>
+                        <td class="number-cell">${{ "%.2f"|format(report.current_balance) }}</td>
+                        <td class="number-cell">{{ report.new_orders }}</td>
+                        <td class="number-cell">{{ "%.1f"|format(report.average_rating) }}⭐</td>
+                        <td class="number-cell">${{ "%.2f"|format(report.ads_spend_total) }}</td>
+                        <td class="number-cell">{{ "%.1f"|format(report.acos) }}%</td>
                         <td>
                             <span
-                                class="status-badge {{ 'healthy' if report.account_status == 'Healthy' else 'unhealthy' }}">
-                                {{ report.account_status }}
+                                class="status-badge {{ 'healthy' if report.account_status_us == 'Healthy' else 'unhealthy' }}">
+                                {{ report.account_status_us[:1] }}
                             </span>
                         </td>
-                        <td class="time-cell">{{ report.created_at.strftime('%H:%M:%S') }}</td>
+                        <td>
+                            <span
+                                class="status-badge {{ 'healthy' if report.account_status_mexico == 'Healthy' else 'unhealthy' }}">
+                                {{ report.account_status_mexico[:1] }}
+                            </span>
+                        </td>
+                        <td>
+                            <span
+                                class="status-badge {{ 'healthy' if report.account_status_canada == 'Healthy' else 'unhealthy' }}">
+                                {{ report.account_status_canada[:1] }}
+                            </span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -96,16 +112,16 @@
         <h2 class="charts-title">Daily Analytics</h2>
         <div class="charts-grid">
             <div class="chart-card">
-                <div id="chart-new-sales"></div>
+                <div id="chart-balance"></div>
             </div>
             <div class="chart-card">
-                <div id="chart-acos"></div>
+                <div id="chart-orders"></div>
             </div>
             <div class="chart-card">
                 <div id="chart-ads-spend"></div>
             </div>
             <div class="chart-card">
-                <div id="chart-inventory"></div>
+                <div id="chart-acos"></div>
             </div>
         </div>
     </div>
@@ -137,17 +153,17 @@
         displayModeBar: false
     };
 
-    Plotly.newPlot('chart-new-sales', JSON.parse('{{ charts_json.new_sales | safe }}').data,
-        JSON.parse('{{ charts_json.new_sales | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-balance', JSON.parse('{{ charts_json.balance | safe }}').data,
+        JSON.parse('{{ charts_json.balance | safe }}').layout, chartConfig);
 
-    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
-        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-orders', JSON.parse('{{ charts_json.orders | safe }}').data,
+        JSON.parse('{{ charts_json.orders | safe }}').layout, chartConfig);
 
     Plotly.newPlot('chart-ads-spend', JSON.parse('{{ charts_json.ads_spend | safe }}').data,
         JSON.parse('{{ charts_json.ads_spend | safe }}').layout, chartConfig);
 
-    Plotly.newPlot('chart-inventory', JSON.parse('{{ charts_json.inventory | safe }}').data,
-        JSON.parse('{{ charts_json.inventory | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
+        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
 </script>
 {% endif %}
 {% endblock %}

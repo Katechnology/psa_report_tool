@@ -63,16 +63,16 @@
         <h2 class="charts-title">{{ selected_brand }} - Performance Trends</h2>
         <div class="charts-grid">
             <div class="chart-card">
-                <div id="chart-new-sales"></div>
+                <div id="chart-balance"></div>
             </div>
             <div class="chart-card">
-                <div id="chart-acos"></div>
+                <div id="chart-orders"></div>
             </div>
             <div class="chart-card">
                 <div id="chart-ads-spend"></div>
             </div>
             <div class="chart-card">
-                <div id="chart-inventory"></div>
+                <div id="chart-acos"></div>
             </div>
         </div>
     </div>
@@ -102,17 +102,17 @@
         displayModeBar: false
     };
 
-    Plotly.newPlot('chart-new-sales', JSON.parse('{{ charts_json.new_sales | safe }}').data,
-        JSON.parse('{{ charts_json.new_sales | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-balance', JSON.parse('{{ charts_json.balance | safe }}').data,
+        JSON.parse('{{ charts_json.balance | safe }}').layout, chartConfig);
 
-    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
-        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-orders', JSON.parse('{{ charts_json.orders | safe }}').data,
+        JSON.parse('{{ charts_json.orders | safe }}').layout, chartConfig);
 
     Plotly.newPlot('chart-ads-spend', JSON.parse('{{ charts_json.ads_spend | safe }}').data,
         JSON.parse('{{ charts_json.ads_spend | safe }}').layout, chartConfig);
 
-    Plotly.newPlot('chart-inventory', JSON.parse('{{ charts_json.inventory | safe }}').data,
-        JSON.parse('{{ charts_json.inventory | safe }}').layout, chartConfig);
+    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
+        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
 </script>
 {% endif %}
 {% endblock %}

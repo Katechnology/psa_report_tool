@@ -18,70 +18,209 @@
 
     <div class="form-container">
         <form id="reportForm" method="POST" action="{{ url_for('employee') }}">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="employee_name" class="form-label">
-                        <span class="label-icon">👤</span>
-                        Employee Name <span class="required">*</span>
-                    </label>
-                    <input type="text" class="form-control" id="employee_name" name="employee_name"
-                        placeholder="Enter your full name" required>
-                </div>
 
-                <div class="form-group">
-                    <label for="brand" class="form-label">
-                        <span class="label-icon">🏷️</span>
-                        Brand <span class="required">*</span>
-                    </label>
-                    <input type="text" class="form-control" id="brand" name="brand" placeholder="e.g., ChicAddOns"
-                        required>
-                </div>
+            <!-- Section: Basic Information -->
+            <div class="form-section">
+                <h3 class="form-section-title">📋 Basic Information</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="employee_name" class="form-label">
+                            Employee Name <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="employee_name" name="employee_name"
+                            placeholder="Enter your full name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="new_sales" class="form-label">
-                        <span class="label-icon">💰</span>
-                        New Sales ($)
-                    </label>
-                    <input type="number" class="form-control" id="new_sales" name="new_sales" placeholder="0.00"
-                        step="0.01" min="0">
-                </div>
+                    <div class="form-group">
+                        <label for="brand" class="form-label">
+                            Brand <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="brand" name="brand" placeholder="e.g., ChicAddOns"
+                            required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="acos" class="form-label">
-                        <span class="label-icon">📊</span>
-                        ACOS (%)
-                    </label>
-                    <input type="number" class="form-control" id="acos" name="acos" placeholder="0.00" step="0.01"
-                        min="0">
+                    <div class="form-group">
+                        <label for="current_balance" class="form-label">
+                            Current Balance ($) <span class="required">*</span>
+                        </label>
+                        <input type="number" class="form-control" id="current_balance" name="current_balance"
+                            placeholder="0.00" step="0.01" required>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="ads_spend" class="form-label">
-                        <span class="label-icon">📢</span>
-                        Ads Spend ($)
-                    </label>
-                    <input type="number" class="form-control" id="ads_spend" name="ads_spend" placeholder="0.00"
-                        step="0.01" min="0">
+            <!-- Section: Orders & Reviews -->
+            <div class="form-section">
+                <h3 class="form-section-title">📦 Orders & Reviews</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="new_orders" class="form-label">
+                            New Orders
+                        </label>
+                        <input type="number" class="form-control" id="new_orders" name="new_orders" placeholder="0"
+                            min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vine_total_orders" class="form-label">
+                            Vine (Total Orders)
+                        </label>
+                        <input type="number" class="form-control" id="vine_total_orders" name="vine_total_orders"
+                            placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new_reviews" class="form-label">
+                            New Reviews
+                        </label>
+                        <input type="number" class="form-control" id="new_reviews" name="new_reviews" placeholder="0"
+                            min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="average_rating" class="form-label">
+                            Average Rating (on listing)
+                        </label>
+                        <input type="number" class="form-control" id="average_rating" name="average_rating"
+                            placeholder="0.0" step="0.1" min="0" max="5">
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="current_inventory" class="form-label">
-                        <span class="label-icon">📦</span>
-                        Current Inventory
-                    </label>
-                    <input type="number" class="form-control" id="current_inventory" name="current_inventory"
-                        placeholder="0" min="0">
+            <!-- Section: Rankings -->
+            <div class="form-section">
+                <h3 class="form-section-title">📊 Rankings</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="main_niche_ranking" class="form-label">
+                            Main Niche Ranking
+                        </label>
+                        <input type="number" class="form-control" id="main_niche_ranking" name="main_niche_ranking"
+                            placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sub_niche_ranking" class="form-label">
+                            Sub Niche Ranking
+                        </label>
+                        <input type="number" class="form-control" id="sub_niche_ranking" name="sub_niche_ranking"
+                            placeholder="0" min="0">
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group full-width">
-                    <label for="account_status" class="form-label">
-                        <span class="label-icon">✅</span>
-                        Account Status <span class="required">*</span>
-                    </label>
-                    <select class="form-control form-select" id="account_status" name="account_status" required>
-                        <option value="Healthy">Healthy</option>
-                        <option value="Unhealthy">Unhealthy</option>
-                    </select>
+            <!-- Section: Advertising -->
+            <div class="form-section">
+                <h3 class="form-section-title">📢 Advertising</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ads_spend_total" class="form-label">
+                            Ads Spend Total ($)
+                        </label>
+                        <input type="number" class="form-control" id="ads_spend_total" name="ads_spend_total"
+                            placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ads_sales_total" class="form-label">
+                            Ads Sales Total ($)
+                        </label>
+                        <input type="number" class="form-control" id="ads_sales_total" name="ads_sales_total"
+                            placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="acos" class="form-label">
+                            ACOS (%)
+                        </label>
+                        <input type="number" class="form-control" id="acos" name="acos" placeholder="0.00" step="0.01"
+                            min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="impressions" class="form-label">
+                            Impressions
+                        </label>
+                        <input type="number" class="form-control" id="impressions" name="impressions" placeholder="0"
+                            min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Account Status -->
+            <div class="form-section">
+                <h3 class="form-section-title">🏦 Account Status</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="account_status_us" class="form-label">
+                            Account Status (US) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="account_status_us" name="account_status_us"
+                            required>
+                            <option value="Healthy">Healthy</option>
+                            <option value="Unhealthy">Unhealthy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account_status_mexico" class="form-label">
+                            Account Status (Mexico) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="account_status_mexico" name="account_status_mexico"
+                            required>
+                            <option value="Healthy">Healthy</option>
+                            <option value="Unhealthy">Unhealthy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account_status_canada" class="form-label">
+                            Account Status (Canada) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="account_status_canada" name="account_status_canada"
+                            required>
+                            <option value="Healthy">Healthy</option>
+                            <option value="Unhealthy">Unhealthy</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Store Status -->
+            <div class="form-section">
+                <h3 class="form-section-title">🏪 Store Status</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="store_status_us" class="form-label">
+                            Store Status (US) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="store_status_us" name="store_status_us" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="store_status_mexico" class="form-label">
+                            Store Status (Mexico) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="store_status_mexico" name="store_status_mexico"
+                            required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="store_status_canada" class="form-label">
+                            Store Status (Canada) <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="store_status_canada" name="store_status_canada"
+                            required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -118,6 +257,30 @@
         </div>
     </div>
 </div>
+
+<style>
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .form-section-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
 {% endblock %}
 
 {% block scripts %}
