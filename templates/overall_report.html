@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Overall Report - PSA Report Tool{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('manager') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+        </a>
+        <h1 class="page-title">Overall Report</h1>
+        <p class="page-subtitle">View brand trends and export data</p>
+    </div>
+
+    <!-- Export Section -->
+    <div class="export-container">
+        <a href="{{ url_for('export_csv') }}" class="btn btn-success export-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download CSV (All Data)
+        </a>
+    </div>
+
+    <!-- Brand Selection -->
+    {% if brands %}
+    <div class="brand-selection">
+        <h2 class="section-title">Select Brand to View Trends</h2>
+        <div class="brand-buttons">
+            {% for brand in brands %}
+            <a href="{{ url_for('manager_overall_brand', brand=brand) }}"
+                class="brand-btn {{ 'active' if selected_brand == brand else '' }}">
+                {{ brand }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <line x1="9" y1="15" x2="15" y2="15" />
+            </svg>
+        </div>
+        <p class="no-results-text">No data available yet. Submit some reports first!</p>
+    </div>
+    {% endif %}
+
+    {% if selected_brand and charts_json %}
+    <!-- Charts Section -->
+    <div class="charts-container">
+        <h2 class="charts-title">{{ selected_brand }} - Performance Trends</h2>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div id="chart-new-sales"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-acos"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-ads-spend"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-inventory"></div>
+            </div>
+        </div>
+    </div>
+    {% elif selected_brand %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+            </svg>
+        </div>
+        <p class="no-results-text">No data available for {{ selected_brand }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if charts_json %}
+<script>
+    // Render charts
+    const chartConfig = {
+        responsive: true,
+        displayModeBar: false
+    };
+
+    Plotly.newPlot('chart-new-sales', JSON.parse('{{ charts_json.new_sales | safe }}').data,
+        JSON.parse('{{ charts_json.new_sales | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
+        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-ads-spend', JSON.parse('{{ charts_json.ads_spend | safe }}').data,
+        JSON.parse('{{ charts_json.ads_spend | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-inventory', JSON.parse('{{ charts_json.inventory | safe }}').data,
+        JSON.parse('{{ charts_json.inventory | safe }}').layout, chartConfig);
+</script>
+{% endif %}
+{% endblock %}

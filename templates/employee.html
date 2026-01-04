@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Report - PSA Report Tool{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('index') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Home
+        </a>
+        <h1 class="page-title">Submit Daily Report</h1>
+        <p class="page-subtitle">Enter your sales performance data for today</p>
+    </div>
+
+    <div class="form-container">
+        <form id="reportForm" method="POST" action="{{ url_for('employee') }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="employee_name" class="form-label">
+                        <span class="label-icon">👤</span>
+                        Employee Name <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="employee_name" name="employee_name"
+                        placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="brand" class="form-label">
+                        <span class="label-icon">🏷️</span>
+                        Brand <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="brand" name="brand" placeholder="e.g., ChicAddOns"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="new_sales" class="form-label">
+                        <span class="label-icon">💰</span>
+                        New Sales ($)
+                    </label>
+                    <input type="number" class="form-control" id="new_sales" name="new_sales" placeholder="0.00"
+                        step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="acos" class="form-label">
+                        <span class="label-icon">📊</span>
+                        ACOS (%)
+                    </label>
+                    <input type="number" class="form-control" id="acos" name="acos" placeholder="0.00" step="0.01"
+                        min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="ads_spend" class="form-label">
+                        <span class="label-icon">📢</span>
+                        Ads Spend ($)
+                    </label>
+                    <input type="number" class="form-control" id="ads_spend" name="ads_spend" placeholder="0.00"
+                        step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="current_inventory" class="form-label">
+                        <span class="label-icon">📦</span>
+                        Current Inventory
+                    </label>
+                    <input type="number" class="form-control" id="current_inventory" name="current_inventory"
+                        placeholder="0" min="0">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="account_status" class="form-label">
+                        <span class="label-icon">✅</span>
+                        Account Status <span class="required">*</span>
+                    </label>
+                    <select class="form-control form-select" id="account_status" name="account_status" required>
+                        <option value="Healthy">Healthy</option>
+                        <option value="Unhealthy">Unhealthy</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary btn-submit" onclick="confirmSubmit()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Save Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4M12 8h.01" />
+            </svg>
+        </div>
+        <h3 class="modal-title">Confirm Submission</h3>
+        <p class="modal-message">Are you sure you want to save this report?</p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">No, Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Yes, Save</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmSubmit() {
+        // Validate required fields first
+        const form = document.getElementById('reportForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        // Show confirmation modal
+        document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    function submitForm() {
+        document.getElementById('reportForm').submit();
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('confirmModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}

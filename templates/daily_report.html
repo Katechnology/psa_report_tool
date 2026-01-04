@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Report - PSA Report Tool{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('manager') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+        </a>
+        <h1 class="page-title">Daily Report</h1>
+        <p class="page-subtitle">View all reports for a specific date</p>
+    </div>
+
+    <!-- Date Selection Form -->
+    <div class="search-container">
+        <form method="POST" action="{{ url_for('manager_daily') }}" class="search-form">
+            <div class="search-input-group">
+                <label for="report_date" class="search-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    Select Date
+                </label>
+                <input type="text" class="form-control search-input" id="report_date" name="report_date"
+                    placeholder="dd/mm/yyyy" value="{{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}"
+                    required>
+                <button type="submit" class="btn btn-primary search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    View
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if selected_date and reports %}
+    <!-- Results Table -->
+    <div class="results-container">
+        <div class="results-header">
+            <h2 class="results-title">Reports for {{ selected_date.strftime('%d/%m/%Y') }}</h2>
+            <span class="results-count">{{ reports|length }} record(s) found</span>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Brand</th>
+                        <th>New Sales</th>
+                        <th>ACOS</th>
+                        <th>Ads Spend</th>
+                        <th>Inventory</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.employee_name }}</td>
+                        <td><span class="brand-badge">{{ report.brand }}</span></td>
+                        <td class="number-cell">${{ "%.2f"|format(report.new_sales) }}</td>
+                        <td class="number-cell">{{ "%.2f"|format(report.acos) }}%</td>
+                        <td class="number-cell">${{ "%.2f"|format(report.ads_spend) }}</td>
+                        <td class="number-cell">{{ report.current_inventory }}</td>
+                        <td>
+                            <span
+                                class="status-badge {{ 'healthy' if report.account_status == 'Healthy' else 'unhealthy' }}">
+                                {{ report.account_status }}
+                            </span>
+                        </td>
+                        <td class="time-cell">{{ report.created_at.strftime('%H:%M:%S') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if charts_json %}
+    <!-- Charts Section -->
+    <div class="charts-container">
+        <h2 class="charts-title">Daily Analytics</h2>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div id="chart-new-sales"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-acos"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-ads-spend"></div>
+            </div>
+            <div class="chart-card">
+                <div id="chart-inventory"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% elif selected_date %}
+    <div class="no-results">
+        <div class="no-results-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+            </svg>
+        </div>
+        <p class="no-results-text">No records found for {{ selected_date.strftime('%d/%m/%Y') }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if charts_json %}
+<script>
+    // Render charts
+    const chartConfig = {
+        responsive: true,
+        displayModeBar: false
+    };
+
+    Plotly.newPlot('chart-new-sales', JSON.parse('{{ charts_json.new_sales | safe }}').data,
+        JSON.parse('{{ charts_json.new_sales | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
+        JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-ads-spend', JSON.parse('{{ charts_json.ads_spend | safe }}').data,
+        JSON.parse('{{ charts_json.ads_spend | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-inventory', JSON.parse('{{ charts_json.inventory | safe }}').data,
+        JSON.parse('{{ charts_json.inventory | safe }}').layout, chartConfig);
+</script>
+{% endif %}
+{% endblock %}

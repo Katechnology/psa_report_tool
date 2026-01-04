@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}PSA Report Tool - Home{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+    <div class="hero-section">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+            </div>
+            <h1 class="app-title">PSA Report Tool</h1>
+            <p class="app-subtitle">Daily Sales Performance Tracking System</p>
+        </div>
+
+        <div class="role-selection">
+            <h2 class="section-title">Select Your Role</h2>
+
+            <div class="role-cards">
+                <a href="{{ url_for('employee') }}" class="role-card employee-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Employee</h3>
+                    <p class="card-description">Submit your daily sales report</p>
+                    <div class="card-arrow">→</div>
+                </a>
+
+                <a href="{{ url_for('manager') }}" class="role-card manager-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Manager</h3>
+                    <p class="card-description">View reports and analytics</p>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        <p>© 2026 PSA Report Tool. All rights reserved.</p>
+    </div>
+</div>
+{% endblock %}
