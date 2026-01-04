@@ -85,6 +85,7 @@ def employee():
                 # Optional fields
                 new_orders=int(request.form.get('new_orders', 0) or 0),
                 vine_total_orders=int(request.form.get('vine_total_orders', 0) or 0),
+                current_inventory=int(request.form.get('current_inventory', 0) or 0),
                 new_reviews=int(request.form.get('new_reviews', 0) or 0),
                 average_rating=float(request.form.get('average_rating', 0) or 0),
                 main_niche_ranking=int(request.form.get('main_niche_ranking', 0) or 0),
@@ -259,6 +260,7 @@ def export_csv():
             'current_balance': r.current_balance,
             'new_orders': r.new_orders,
             'vine_total_orders': r.vine_total_orders,
+            'current_inventory': r.current_inventory,
             'new_reviews': r.new_reviews,
             'average_rating': r.average_rating,
             'main_niche_ranking': r.main_niche_ranking,

@@ -36,6 +36,7 @@ class DailyReport(db.Model):
     # Optional fields
     new_orders = db.Column(db.Integer, nullable=True, default=0)
     vine_total_orders = db.Column(db.Integer, nullable=True, default=0)
+    current_inventory = db.Column(db.Integer, nullable=True, default=0)
     new_reviews = db.Column(db.Integer, nullable=True, default=0)
     average_rating = db.Column(db.Float, nullable=True, default=0.0)
     main_niche_ranking = db.Column(db.Integer, nullable=True, default=0)
@@ -64,6 +65,7 @@ class DailyReport(db.Model):
             'current_balance': self.current_balance,
             'new_orders': self.new_orders,
             'vine_total_orders': self.vine_total_orders,
+            'current_inventory': self.current_inventory,
             'new_reviews': self.new_reviews,
             'average_rating': self.average_rating,
             'main_niche_ranking': self.main_niche_ranking,
