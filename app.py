@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
 from datetime import datetime
+from functools import wraps
 import pandas as pd
 import plotly.express as px
 import plotly.utils
 import json
 import pytz
+import os
 
 from config import Config
 from models import db, DailyReport, get_bangkok_now
@@ -12,12 +14,30 @@ from models import db, DailyReport, get_bangkok_now
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Manager password (use environment variable or default)
+MANAGER_PASSWORD = os.environ.get('MANAGER_PASSWORD', 'psa2026')
+
 # Initialize database
 db.init_app(app)
 
 # Create tables on first request
 with app.app_context():
     db.create_all()
+
+
+# =============================================================================
+# LOGIN REQUIRED DECORATOR
+# =============================================================================
+
+def login_required(f):
+    """Decorator to require manager login."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('manager_logged_in'):
+            flash('Please login to access the manager section.', 'error')
+            return redirect(url_for('manager_login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # =============================================================================
@@ -86,13 +106,41 @@ def employee():
 # MANAGER ROUTES
 # =============================================================================
 
+@app.route('/manager/login', methods=['GET', 'POST'])
+def manager_login():
+    """Manager login page."""
+    if session.get('manager_logged_in'):
+        return redirect(url_for('manager'))
+    
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        if password == MANAGER_PASSWORD:
+            session['manager_logged_in'] = True
+            flash('Login successful!', 'success')
+            return redirect(url_for('manager'))
+        else:
+            flash('Incorrect password. Please try again.', 'error')
+    
+    return render_template('manager_login.html')
+
+
+@app.route('/manager/logout')
+def manager_logout():
+    """Manager logout."""
+    session.pop('manager_logged_in', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('index'))
+
+
 @app.route('/manager')
+@login_required
 def manager():
     """Manager menu page."""
     return render_template('manager.html')
 
 
 @app.route('/manager/daily', methods=['GET', 'POST'])
+@login_required
 def manager_daily():
     """Manager daily report view."""
     reports = []
@@ -127,6 +175,7 @@ def manager_daily():
 
 
 @app.route('/manager/overall')
+@login_required
 def manager_overall():
     """Manager overall report view with brand buttons."""
     # Get all unique brands
@@ -140,6 +189,7 @@ def manager_overall():
 
 
 @app.route('/manager/overall/<brand>')
+@login_required
 def manager_overall_brand(brand):
     """Manager overall report for a specific brand."""
     # Get all unique brands for navigation
@@ -165,6 +215,7 @@ def manager_overall_brand(brand):
 
 
 @app.route('/manager/export/csv')
+@login_required
 def export_csv():
     """Export all data as CSV."""
     # Query all reports
