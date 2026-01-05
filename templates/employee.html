@@ -338,21 +338,40 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- Confirmation Modal with Data Preview -->
 <div class="modal-overlay" id="confirmModal">
-    <div class="modal-content">
-        <div class="modal-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4M12 8h.01" />
-            </svg>
+    <div class="modal-content modal-preview">
+        <div class="modal-header">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                </svg>
+            </div>
+            <h3 class="modal-title">Review Your Report</h3>
+            <p class="modal-subtitle">Please review all data before submitting</p>
         </div>
-        <h3 class="modal-title">Confirm Submission</h3>
-        <p class="modal-message">Are you sure you want to save this report?</p>
+
+        <div class="preview-container" id="previewContainer">
+            <!-- Preview data will be inserted here by JavaScript -->
+        </div>
+
         <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" onclick="closeModal()">No, Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="submitForm()">Yes, Save</button>
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5" />
+                </svg>
+                Go Back & Edit
+            </button>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M20 6L9 17l-5-5" />
+                </svg>
+                Confirm & Save
+            </button>
         </div>
     </div>
 </div>
@@ -379,6 +398,88 @@
         align-items: center;
         gap: 0.5rem;
     }
+
+    /* Preview Modal Styles */
+    .modal-preview {
+        max-width: 700px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+
+    .modal-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .preview-container {
+        flex: 1;
+        overflow-y: auto;
+        max-height: 50vh;
+        padding: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-section-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem 1rem;
+    }
+
+    .preview-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+
+    .preview-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .preview-value {
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .preview-value.empty {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+        .preview-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -392,8 +493,109 @@
             return;
         }
 
+        // Generate preview
+        generatePreview();
+
         // Show confirmation modal
         document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function generatePreview() {
+        const container = document.getElementById('previewContainer');
+
+        const sections = [
+            {
+                title: '📋 Basic Information',
+                fields: [
+                    { label: 'Employee Name', id: 'employee_name' },
+                    { label: 'Brand', id: 'brand' },
+                    { label: 'Date Report', id: 'date_report' },
+                    { label: 'Current Balance', id: 'current_balance', prefix: '$' },
+                    { label: 'Release Date of Balance', id: 'release_date_balance' }
+                ]
+            },
+            {
+                title: '📦 Orders & Reviews',
+                fields: [
+                    { label: 'New Orders', id: 'new_orders' },
+                    { label: 'Vine (Total Orders)', id: 'vine_total_orders' },
+                    { label: 'Current Inventory', id: 'current_inventory' },
+                    { label: 'Avg Orders (30 Days)', id: 'average_orders_30_days' },
+                    { label: 'New Reviews', id: 'new_reviews' },
+                    { label: 'Average Rating', id: 'average_rating' }
+                ]
+            },
+            {
+                title: '📊 Rankings',
+                fields: [
+                    { label: 'Main Niche Ranking', id: 'main_niche_ranking' },
+                    { label: 'Sub Niche Ranking', id: 'sub_niche_ranking' }
+                ]
+            },
+            {
+                title: '📢 Advertising',
+                fields: [
+                    { label: 'Ads Spend Total', id: 'ads_spend_total', prefix: '$' },
+                    { label: 'Ads Sales Total', id: 'ads_sales_total', prefix: '$' },
+                    { label: 'Ads Sales Today', id: 'ads_sales_today', prefix: '$' },
+                    { label: 'ACOS', id: 'acos', suffix: '%' },
+                    { label: 'Impressions', id: 'impressions' }
+                ]
+            },
+            {
+                title: '🛒 Shopify Attributes',
+                fields: [
+                    { label: 'Click-Throughs', id: 'shopify_click_throughs' },
+                    { label: 'Total DPV', id: 'shopify_total_dpv' },
+                    { label: 'Total ATC', id: 'shopify_total_atc' },
+                    { label: 'Total Purchases', id: 'shopify_total_purchases' },
+                    { label: 'Total Product Sales', id: 'shopify_total_product_sales', prefix: '$' }
+                ]
+            },
+            {
+                title: '🏦 Account Status',
+                fields: [
+                    { label: 'Account Status (US)', id: 'account_status_us' },
+                    { label: 'Account Status (Mexico)', id: 'account_status_mexico' },
+                    { label: 'Account Status (Canada)', id: 'account_status_canada' }
+                ]
+            },
+            {
+                title: '🏪 Store Status',
+                fields: [
+                    { label: 'Store Status (US)', id: 'store_status_us' },
+                    { label: 'Store Status (Mexico)', id: 'store_status_mexico' },
+                    { label: 'Store Status (Canada)', id: 'store_status_canada' }
+                ]
+            }
+        ];
+
+        let html = '';
+        sections.forEach(section => {
+            html += `<div class="preview-section">
+                <div class="preview-section-title">${section.title}</div>
+                <div class="preview-grid">`;
+
+            section.fields.forEach(field => {
+                const element = document.getElementById(field.id);
+                let value = element ? element.value : '';
+
+                if (value && field.prefix) value = field.prefix + value;
+                if (value && field.suffix) value = value + field.suffix;
+
+                const displayValue = value || '(not provided)';
+                const emptyClass = value ? '' : 'empty';
+
+                html += `<div class="preview-item">
+                    <span class="preview-label">${field.label}</span>
+                    <span class="preview-value ${emptyClass}">${displayValue}</span>
+                </div>`;
+            });
+
+            html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
     }
 
     function closeModal() {
