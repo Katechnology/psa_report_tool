@@ -40,11 +40,27 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="date_report" class="form-label">
+                            Date Report
+                        </label>
+                        <input type="text" class="form-control" id="date_report" name="date_report"
+                            placeholder="dd/mm/yyyy">
+                    </div>
+
+                    <div class="form-group">
                         <label for="current_balance" class="form-label">
                             Current Balance ($) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="current_balance" name="current_balance"
                             placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="release_date_balance" class="form-label">
+                            Release Date of Balance
+                        </label>
+                        <input type="text" class="form-control" id="release_date_balance" name="release_date_balance"
+                            placeholder="dd/mm/yyyy">
                     </div>
                 </div>
             </div>
@@ -75,6 +91,14 @@
                         </label>
                         <input type="number" class="form-control" id="current_inventory" name="current_inventory"
                             placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="average_orders_30_days" class="form-label">
+                            Average Orders (Last 30 Days)
+                        </label>
+                        <input type="number" class="form-control" id="average_orders_30_days"
+                            name="average_orders_30_days" placeholder="0.0" step="0.01" min="0">
                     </div>
 
                     <div class="form-group">
@@ -138,6 +162,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="ads_sales_today" class="form-label">
+                            Ads Sales Today ($)
+                        </label>
+                        <input type="number" class="form-control" id="ads_sales_today" name="ads_sales_today"
+                            placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
                         <label for="acos" class="form-label">
                             ACOS (%)
                         </label>
@@ -151,6 +183,52 @@
                         </label>
                         <input type="number" class="form-control" id="impressions" name="impressions" placeholder="0"
                             min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Shopify Attributes -->
+            <div class="form-section">
+                <h3 class="form-section-title">🛒 Shopify Attributes</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="shopify_click_throughs" class="form-label">
+                            Click-Throughs
+                        </label>
+                        <input type="number" class="form-control" id="shopify_click_throughs"
+                            name="shopify_click_throughs" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shopify_total_dpv" class="form-label">
+                            Total DPV
+                        </label>
+                        <input type="number" class="form-control" id="shopify_total_dpv" name="shopify_total_dpv"
+                            placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shopify_total_atc" class="form-label">
+                            Total ATC
+                        </label>
+                        <input type="number" class="form-control" id="shopify_total_atc" name="shopify_total_atc"
+                            placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shopify_total_purchases" class="form-label">
+                            Total Purchases
+                        </label>
+                        <input type="number" class="form-control" id="shopify_total_purchases"
+                            name="shopify_total_purchases" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shopify_total_product_sales" class="form-label">
+                            Total Product Sales ($)
+                        </label>
+                        <input type="number" class="form-control" id="shopify_total_product_sales"
+                            name="shopify_total_product_sales" placeholder="0.00" step="0.01" min="0">
                     </div>
                 </div>
             </div>

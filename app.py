@@ -67,10 +67,12 @@ def employee():
                 report_date=bangkok_now.date(),
                 created_at=bangkok_now.replace(tzinfo=None),  # Store without timezone
                 
-                # Required fields
+                # Basic Information
                 employee_name=request.form.get('employee_name', '').strip(),
                 brand=request.form.get('brand', '').strip(),
+                date_report=request.form.get('date_report', '').strip(),
                 current_balance=float(request.form.get('current_balance', 0) or 0),
+                release_date_balance=request.form.get('release_date_balance', '').strip(),
                 
                 # Account Status (required)
                 account_status_us=request.form.get('account_status_us', 'Healthy'),
@@ -82,18 +84,31 @@ def employee():
                 store_status_mexico=request.form.get('store_status_mexico', 'Active'),
                 store_status_canada=request.form.get('store_status_canada', 'Active'),
                 
-                # Optional fields
+                # Orders & Reviews
                 new_orders=int(request.form.get('new_orders', 0) or 0),
                 vine_total_orders=int(request.form.get('vine_total_orders', 0) or 0),
                 current_inventory=int(request.form.get('current_inventory', 0) or 0),
+                average_orders_30_days=float(request.form.get('average_orders_30_days', 0) or 0),
                 new_reviews=int(request.form.get('new_reviews', 0) or 0),
                 average_rating=float(request.form.get('average_rating', 0) or 0),
+                
+                # Rankings
                 main_niche_ranking=int(request.form.get('main_niche_ranking', 0) or 0),
                 sub_niche_ranking=int(request.form.get('sub_niche_ranking', 0) or 0),
+                
+                # Advertising
                 ads_spend_total=float(request.form.get('ads_spend_total', 0) or 0),
                 ads_sales_total=float(request.form.get('ads_sales_total', 0) or 0),
+                ads_sales_today=float(request.form.get('ads_sales_today', 0) or 0),
                 acos=float(request.form.get('acos', 0) or 0),
-                impressions=int(request.form.get('impressions', 0) or 0)
+                impressions=int(request.form.get('impressions', 0) or 0),
+                
+                # Shopify Attributes
+                shopify_click_throughs=int(request.form.get('shopify_click_throughs', 0) or 0),
+                shopify_total_dpv=int(request.form.get('shopify_total_dpv', 0) or 0),
+                shopify_total_atc=int(request.form.get('shopify_total_atc', 0) or 0),
+                shopify_total_purchases=int(request.form.get('shopify_total_purchases', 0) or 0),
+                shopify_total_product_sales=float(request.form.get('shopify_total_product_sales', 0) or 0)
             )
             
             # Validate required fields
@@ -257,18 +272,27 @@ def export_csv():
             'created_at': r.created_at.strftime('%d/%m/%Y %H:%M:%S'),
             'employee_name': r.employee_name,
             'brand': r.brand,
+            'date_report': r.date_report,
             'current_balance': r.current_balance,
+            'release_date_balance': r.release_date_balance,
             'new_orders': r.new_orders,
             'vine_total_orders': r.vine_total_orders,
             'current_inventory': r.current_inventory,
+            'average_orders_30_days': r.average_orders_30_days,
             'new_reviews': r.new_reviews,
             'average_rating': r.average_rating,
             'main_niche_ranking': r.main_niche_ranking,
             'sub_niche_ranking': r.sub_niche_ranking,
             'ads_spend_total': r.ads_spend_total,
             'ads_sales_total': r.ads_sales_total,
+            'ads_sales_today': r.ads_sales_today,
             'acos': r.acos,
             'impressions': r.impressions,
+            'shopify_click_throughs': r.shopify_click_throughs,
+            'shopify_total_dpv': r.shopify_total_dpv,
+            'shopify_total_atc': r.shopify_total_atc,
+            'shopify_total_purchases': r.shopify_total_purchases,
+            'shopify_total_product_sales': r.shopify_total_product_sales,
             'account_status_us': r.account_status_us,
             'account_status_mexico': r.account_status_mexico,
             'account_status_canada': r.account_status_canada,

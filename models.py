@@ -18,10 +18,12 @@ class DailyReport(db.Model):
     report_date = db.Column(db.Date, nullable=False, index=True)
     created_at = db.Column(db.DateTime, nullable=False)
     
-    # Required fields
+    # Basic Information
     employee_name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(100), nullable=False, index=True)
+    date_report = db.Column(db.String(20), nullable=True)  # User-typed date
     current_balance = db.Column(db.Float, nullable=False, default=0.0)
+    release_date_balance = db.Column(db.String(20), nullable=True)  # Date money transferred
     
     # Account Status (required) - Healthy/Unhealthy
     account_status_us = db.Column(db.String(20), nullable=False, default='Healthy')
@@ -33,18 +35,31 @@ class DailyReport(db.Model):
     store_status_mexico = db.Column(db.String(20), nullable=False, default='Active')
     store_status_canada = db.Column(db.String(20), nullable=False, default='Active')
     
-    # Optional fields
+    # Orders & Reviews
     new_orders = db.Column(db.Integer, nullable=True, default=0)
     vine_total_orders = db.Column(db.Integer, nullable=True, default=0)
     current_inventory = db.Column(db.Integer, nullable=True, default=0)
+    average_orders_30_days = db.Column(db.Float, nullable=True, default=0.0)  # NEW
     new_reviews = db.Column(db.Integer, nullable=True, default=0)
     average_rating = db.Column(db.Float, nullable=True, default=0.0)
+    
+    # Rankings
     main_niche_ranking = db.Column(db.Integer, nullable=True, default=0)
     sub_niche_ranking = db.Column(db.Integer, nullable=True, default=0)
+    
+    # Advertising
     ads_spend_total = db.Column(db.Float, nullable=True, default=0.0)
     ads_sales_total = db.Column(db.Float, nullable=True, default=0.0)
+    ads_sales_today = db.Column(db.Float, nullable=True, default=0.0)  # NEW
     acos = db.Column(db.Float, nullable=True, default=0.0)
     impressions = db.Column(db.Integer, nullable=True, default=0)
+    
+    # Shopify Attributes (NEW section)
+    shopify_click_throughs = db.Column(db.Integer, nullable=True, default=0)
+    shopify_total_dpv = db.Column(db.Integer, nullable=True, default=0)
+    shopify_total_atc = db.Column(db.Integer, nullable=True, default=0)
+    shopify_total_purchases = db.Column(db.Integer, nullable=True, default=0)
+    shopify_total_product_sales = db.Column(db.Float, nullable=True, default=0.0)
     
     # Composite index for brand + report_date queries
     __table_args__ = (
@@ -62,18 +77,27 @@ class DailyReport(db.Model):
             'created_at': self.created_at.strftime('%d/%m/%Y %H:%M:%S') if self.created_at else None,
             'employee_name': self.employee_name,
             'brand': self.brand,
+            'date_report': self.date_report,
             'current_balance': self.current_balance,
+            'release_date_balance': self.release_date_balance,
             'new_orders': self.new_orders,
             'vine_total_orders': self.vine_total_orders,
             'current_inventory': self.current_inventory,
+            'average_orders_30_days': self.average_orders_30_days,
             'new_reviews': self.new_reviews,
             'average_rating': self.average_rating,
             'main_niche_ranking': self.main_niche_ranking,
             'sub_niche_ranking': self.sub_niche_ranking,
             'ads_spend_total': self.ads_spend_total,
             'ads_sales_total': self.ads_sales_total,
+            'ads_sales_today': self.ads_sales_today,
             'acos': self.acos,
             'impressions': self.impressions,
+            'shopify_click_throughs': self.shopify_click_throughs,
+            'shopify_total_dpv': self.shopify_total_dpv,
+            'shopify_total_atc': self.shopify_total_atc,
+            'shopify_total_purchases': self.shopify_total_purchases,
+            'shopify_total_product_sales': self.shopify_total_product_sales,
             'account_status_us': self.account_status_us,
             'account_status_mexico': self.account_status_mexico,
             'account_status_canada': self.account_status_canada,
