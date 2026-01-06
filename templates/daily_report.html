@@ -120,6 +120,9 @@
                 <div id="chart-ads-spend"></div>
             </div>
             <div class="chart-card">
+                <div id="chart-ads-sales-today"></div>
+            </div>
+            <div class="chart-card">
                 <div id="chart-acos"></div>
             </div>
         </div>
@@ -160,6 +163,9 @@
 
     Plotly.newPlot('chart-ads-spend', JSON.parse('{{ charts_json.ads_spend | safe }}').data,
         JSON.parse('{{ charts_json.ads_spend | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-ads-sales-today', JSON.parse('{{ charts_json.ads_sales_today | safe }}').data,
+        JSON.parse('{{ charts_json.ads_sales_today | safe }}').layout, chartConfig);
 
     Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
         JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);

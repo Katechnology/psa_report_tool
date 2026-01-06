@@ -331,6 +331,7 @@ def generate_daily_charts(reports):
         'current_balance': 'sum',
         'new_orders': 'sum',
         'ads_spend_total': 'sum',
+        'ads_sales_today': 'sum',
         'acos': 'mean'
     }).reset_index()
     
@@ -375,9 +376,9 @@ def generate_daily_charts(reports):
     )
     charts['ads_spend'] = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # ACOS by Brand
-    fig4 = px.bar(agg_df, x='brand', y='acos', 
-                  title='Average ACOS by Brand (%)',
+    # Ads Sales Today by Brand
+    fig4 = px.bar(agg_df, x='brand', y='ads_sales_today', 
+                  title='Ads Sales Today by Brand ($)',
                   color='brand', color_discrete_sequence=colors)
     fig4.update_layout(
         paper_bgcolor='rgba(0,0,0,0)',
@@ -385,7 +386,19 @@ def generate_daily_charts(reports):
         font_color='#ffffff',
         showlegend=False
     )
-    charts['acos'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+    charts['ads_sales_today'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+    
+    # ACOS by Brand
+    fig5 = px.bar(agg_df, x='brand', y='acos', 
+                  title='Average ACOS by Brand (%)',
+                  color='brand', color_discrete_sequence=colors)
+    fig5.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font_color='#ffffff',
+        showlegend=False
+    )
+    charts['acos'] = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     
     return charts
 
