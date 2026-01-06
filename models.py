@@ -39,7 +39,8 @@ class DailyReport(db.Model):
     new_orders = db.Column(db.Integer, nullable=True, default=0)
     vine_total_orders = db.Column(db.Integer, nullable=True, default=0)
     current_inventory = db.Column(db.Integer, nullable=True, default=0)
-    average_orders_30_days = db.Column(db.Float, nullable=True, default=0.0)  # NEW
+    average_orders_30_days = db.Column(db.Float, nullable=True, default=0.0)
+    total_unit_sales = db.Column(db.Integer, nullable=True, default=0)  # Total units sold
     new_reviews = db.Column(db.Integer, nullable=True, default=0)
     average_rating = db.Column(db.Float, nullable=True, default=0.0)
     
@@ -84,6 +85,7 @@ class DailyReport(db.Model):
             'vine_total_orders': self.vine_total_orders,
             'current_inventory': self.current_inventory,
             'average_orders_30_days': self.average_orders_30_days,
+            'total_unit_sales': self.total_unit_sales,
             'new_reviews': self.new_reviews,
             'average_rating': self.average_rating,
             'main_niche_ranking': self.main_niche_ranking,

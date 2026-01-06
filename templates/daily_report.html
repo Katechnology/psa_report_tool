@@ -30,9 +30,8 @@
                     </svg>
                     Select Date
                 </label>
-                <input type="text" class="form-control search-input" id="report_date" name="report_date"
-                    placeholder="dd/mm/yyyy" value="{{ selected_date.strftime('%d/%m/%Y') if selected_date else '' }}"
-                    required>
+                <input type="date" class="form-control search-input" id="report_date" name="report_date"
+                    value="{{ selected_date.strftime('%Y-%m-%d') if selected_date else '' }}" required>
                 <button type="submit" class="btn btn-primary search-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2">

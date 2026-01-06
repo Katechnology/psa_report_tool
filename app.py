@@ -89,6 +89,7 @@ def employee():
                 vine_total_orders=int(request.form.get('vine_total_orders', 0) or 0),
                 current_inventory=int(request.form.get('current_inventory', 0) or 0),
                 average_orders_30_days=float(request.form.get('average_orders_30_days', 0) or 0),
+                total_unit_sales=int(request.form.get('total_unit_sales', 0) or 0),
                 new_reviews=int(request.form.get('new_reviews', 0) or 0),
                 average_rating=float(request.form.get('average_rating', 0) or 0),
                 
@@ -188,8 +189,8 @@ def manager_daily():
         
         if date_str:
             try:
-                # Parse date from dd/mm/yyyy format
-                selected_date = datetime.strptime(date_str, '%d/%m/%Y').date()
+                # Parse date from HTML5 date picker (YYYY-MM-DD format)
+                selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
                 
                 # Query reports for selected date
                 reports = DailyReport.query.filter_by(report_date=selected_date)\
@@ -199,10 +200,10 @@ def manager_daily():
                     # Generate charts
                     charts_json = generate_daily_charts(reports)
                 else:
-                    flash(f'No records found for {date_str}', 'info')
+                    flash(f'No records found for {selected_date.strftime("%d/%m/%Y")}', 'info')
                     
             except ValueError:
-                flash('Invalid date format. Please use dd/mm/yyyy', 'error')
+                flash('Invalid date format.', 'error')
     
     return render_template('daily_report.html', 
                          reports=reports, 
@@ -279,6 +280,7 @@ def export_csv():
             'vine_total_orders': r.vine_total_orders,
             'current_inventory': r.current_inventory,
             'average_orders_30_days': r.average_orders_30_days,
+            'total_unit_sales': r.total_unit_sales,
             'new_reviews': r.new_reviews,
             'average_rating': r.average_rating,
             'main_niche_ranking': r.main_niche_ranking,
