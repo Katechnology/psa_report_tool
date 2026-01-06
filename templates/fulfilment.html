@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Fulfilment - PSA Report Tool{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('manager') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+        </a>
+        <h1 class="page-title">Fulfilment Status</h1>
+        <p class="page-subtitle">Brand inventory priorities based on Days of Stock</p>
+    </div>
+
+    <div class="fulfilment-container">
+        <div class="fulfilment-info">
+            <div class="info-box">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                </svg>
+                <span>Formula: Days of Stock = Current Inventory ÷ Average Daily Orders</span>
+            </div>
+            <div class="info-box threshold">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>Threshold: ≤ 60 days = Urgent, > 60 days = Safe</span>
+            </div>
+        </div>
+
+        <div class="fulfilment-columns">
+            <!-- Safe Column -->
+            <div class="fulfilment-column safe">
+                <div class="column-header safe-header">
+                    <div class="column-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <h2 class="column-title">Safe</h2>
+                    <span class="column-count">{{ safe_brands|length }} brands</span>
+                </div>
+                <div class="brand-list">
+                    {% if safe_brands %}
+                    {% for brand in safe_brands %}
+                    <div class="brand-card safe-card">
+                        <div class="brand-name">{{ brand.name }}</div>
+                        <div class="brand-stats">
+                            <div class="stat">
+                                <span class="stat-label">Inventory</span>
+                                <span class="stat-value">{{ brand.inventory }}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Avg Orders/Day</span>
+                                <span class="stat-value">{{ "%.1f"|format(brand.avg_orders) }}</span>
+                            </div>
+                            <div class="stat highlight">
+                                <span class="stat-label">Days of Stock</span>
+                                <span class="stat-value">{{ "%.0f"|format(brand.days_of_stock) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="no-brands">No brands in safe status</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Urgent Column -->
+            <div class="fulfilment-column urgent">
+                <div class="column-header urgent-header">
+                    <div class="column-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                    <h2 class="column-title">Urgent</h2>
+                    <span class="column-count">{{ urgent_brands|length }} brands</span>
+                </div>
+                <div class="brand-list">
+                    {% if urgent_brands %}
+                    {% for brand in urgent_brands %}
+                    <div class="brand-card urgent-card">
+                        <div class="brand-name">{{ brand.name }}</div>
+                        <div class="brand-stats">
+                            <div class="stat">
+                                <span class="stat-label">Inventory</span>
+                                <span class="stat-value">{{ brand.inventory }}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Avg Orders/Day</span>
+                                <span class="stat-value">{{ "%.1f"|format(brand.avg_orders) }}</span>
+                            </div>
+                            <div class="stat highlight urgent">
+                                <span class="stat-label">Days of Stock</span>
+                                <span class="stat-value">{{ "%.0f"|format(brand.days_of_stock) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="no-brands">No brands need urgent fulfilment</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fulfilment-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .fulfilment-info {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--surface-secondary);
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .info-box svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .info-box.threshold {
+        color: var(--warning-color, #ffd93d);
+    }
+
+    .fulfilment-columns {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .fulfilment-columns {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .fulfilment-column {
+        background: var(--surface-secondary);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .column-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .safe-header {
+        background: linear-gradient(135deg, rgba(0, 200, 83, 0.1), rgba(0, 200, 83, 0.05));
+        border-bottom-color: rgba(0, 200, 83, 0.2);
+    }
+
+    .urgent-header {
+        background: linear-gradient(135deg, rgba(255, 82, 82, 0.1), rgba(255, 82, 82, 0.05));
+        border-bottom-color: rgba(255, 82, 82, 0.2);
+    }
+
+    .column-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .safe-header .column-icon {
+        background: rgba(0, 200, 83, 0.2);
+        color: #00c853;
+    }
+
+    .urgent-header .column-icon {
+        background: rgba(255, 82, 82, 0.2);
+        color: #ff5252;
+    }
+
+    .column-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .column-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        flex: 1;
+    }
+
+    .safe-header .column-title {
+        color: #00c853;
+    }
+
+    .urgent-header .column-title {
+        color: #ff5252;
+    }
+
+    .column-count {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+
+    .brand-list {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .brand-card {
+        background: var(--surface-primary);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        border-left: 4px solid;
+    }
+
+    .safe-card {
+        border-left-color: #00c853;
+    }
+
+    .urgent-card {
+        border-left-color: #ff5252;
+    }
+
+    .brand-name {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+    }
+
+    .brand-stats {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .stat.highlight .stat-value {
+        color: #00c853;
+    }
+
+    .stat.highlight.urgent .stat-value {
+        color: #ff5252;
+    }
+
+    .no-brands {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+</style>
+{% endblock %}

@@ -251,6 +251,56 @@ def manager_overall_brand(brand):
                          charts_json=charts_json)
 
 
+@app.route('/manager/fulfilment')
+@login_required
+def manager_fulfilment():
+    """Manager fulfilment view - categorizes brands by inventory status."""
+    # Get all unique brands
+    brands = db.session.query(DailyReport.brand).distinct().all()
+    brands = [b[0] for b in brands]
+    
+    safe_brands = []
+    urgent_brands = []
+    
+    for brand_name in brands:
+        # Get the latest report for this brand
+        latest_report = DailyReport.query.filter_by(brand=brand_name)\
+            .order_by(DailyReport.created_at.desc())\
+            .first()
+        
+        if latest_report:
+            inventory = latest_report.current_inventory or 0
+            avg_orders = latest_report.average_orders_30_days or 0
+            
+            # Calculate days of stock (flag index)
+            if avg_orders > 0:
+                days_of_stock = inventory / avg_orders
+            else:
+                days_of_stock = float('inf') if inventory > 0 else 0
+            
+            brand_data = {
+                'name': brand_name,
+                'inventory': inventory,
+                'avg_orders': avg_orders,
+                'days_of_stock': days_of_stock if days_of_stock != float('inf') else 999
+            }
+            
+            # Categorize: <= 60 days = Urgent, > 60 days = Safe
+            if days_of_stock <= 60:
+                urgent_brands.append(brand_data)
+            else:
+                safe_brands.append(brand_data)
+    
+    # Sort urgent by days_of_stock (lowest first - most urgent)
+    urgent_brands.sort(key=lambda x: x['days_of_stock'])
+    # Sort safe by days_of_stock (lowest first)
+    safe_brands.sort(key=lambda x: x['days_of_stock'])
+    
+    return render_template('fulfilment.html',
+                         safe_brands=safe_brands,
+                         urgent_brands=urgent_brands)
+
+
 @app.route('/manager/export/csv')
 @login_required
 def export_csv():
