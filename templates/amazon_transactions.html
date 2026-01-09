@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand }} - Amazon Transactions{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('amazon_transactions_select') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+        </a>
+        <h1 class="page-title">{{ brand }}</h1>
+        <p class="page-subtitle">Amazon Revenue & Cost Transactions</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <form action="{{ url_for('amazon_upload', brand=brand) }}" method="POST" enctype="multipart/form-data"
+            class="upload-form">
+            <label for="xml_file" class="btn btn-primary upload-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload XML File
+            </label>
+            <input type="file" id="xml_file" name="xml_file" accept=".xml" style="display: none;"
+                onchange="this.form.submit()">
+        </form>
+
+        <a href="{{ url_for('amazon_download', brand=brand) }}" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download CSV
+        </a>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="table-container">
+        <h3 class="table-title">Latest Transactions (5 most recent)</h3>
+        {% if transactions %}
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Posted Date</th>
+                        <th>Type</th>
+                        <th>Order ID</th>
+                        <th>SKU</th>
+                        <th>Qty</th>
+                        <th>Principal</th>
+                        <th>FBA Fee</th>
+                        <th>Commission</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td>{{ t.posted_date.strftime('%d/%m/%Y') if t.posted_date else '-' }}</td>
+                        <td><span class="type-badge {{ t.transaction_type|lower|replace(' ', '-') }}">{{
+                                t.transaction_type }}</span></td>
+                        <td class="order-id">{{ t.amazon_order_id or '-' }}</td>
+                        <td>{{ t.sku or '-' }}</td>
+                        <td>{{ t.quantity or '-' }}</td>
+                        <td class="amount positive">${{ "%.2f"|format(t.principal_amount or 0) }}</td>
+                        <td class="amount negative">${{ "%.2f"|format(t.fba_fee or 0) }}</td>
+                        <td class="amount negative">${{ "%.2f"|format(t.commission_fee or 0) }}</td>
+                        <td class="amount {{ 'positive' if (t.total_amount or 0) >= 0 else 'negative' }}">${{
+                            "%.2f"|format(t.total_amount or 0) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <p>No transactions yet. Upload an XML file to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .upload-btn,
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .upload-btn svg,
+    .btn-secondary svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .table-container {
+        background: var(--surface-secondary);
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+
+    .table-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+
+    .order-id {
+        font-family: monospace;
+        font-size: 0.75rem;
+    }
+
+    .type-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .type-badge.order {
+        background: rgba(0, 200, 83, 0.2);
+        color: #00c853;
+    }
+
+    .type-badge.othertransaction {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+    }
+
+    .type-badge.advertising {
+        background: rgba(33, 150, 243, 0.2);
+        color: #2196f3;
+    }
+
+    .amount {
+        font-family: monospace;
+    }
+
+    .amount.positive {
+        color: #00c853;
+    }
+
+    .amount.negative {
+        color: #ff5252;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+    }
+
+    .no-data svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}

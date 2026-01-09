@@ -7,9 +7,16 @@ import plotly.utils
 import json
 import pytz
 import os
+import xml.etree.ElementTree as ET
 
 from config import Config
-from models import db, DailyReport, get_bangkok_now
+from models import db, DailyReport, AmazonTransaction, ShipmentCost, get_bangkok_now
+
+# Brand list for dropdowns
+BRANDS = [
+    'ENERZAA', 'LUVOST', 'PEAKSHILAJIT', 'BOXOOS', 'CYLEOX', 'ROBURSTAGE',
+    'CHICADDONS', 'FEMBURN', 'ORANIC EXTRACT', 'ZOVOST', 'VITALIXHAIR', 'SYLIARIX'
+]
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -299,6 +306,266 @@ def manager_fulfilment():
     return render_template('fulfilment.html',
                          safe_brands=safe_brands,
                          urgent_brands=urgent_brands)
+
+
+# =============================================================================
+# REVENUE & COST ROUTES
+# =============================================================================
+
+@app.route('/manager/revenue-cost')
+@login_required
+def manager_revenue_cost():
+    """Revenue & Cost main menu."""
+    return render_template('revenue_cost.html')
+
+
+@app.route('/manager/amazon')
+@login_required
+def amazon_transactions_select():
+    """Select brand for Amazon transactions."""
+    return render_template('amazon_select.html', brands=BRANDS)
+
+
+@app.route('/manager/amazon/<brand>')
+@login_required
+def amazon_transactions(brand):
+    """View Amazon transactions for a brand."""
+    transactions = AmazonTransaction.query.filter_by(brand=brand)\
+        .order_by(AmazonTransaction.posted_date.desc())\
+        .limit(5).all()
+    return render_template('amazon_transactions.html', brand=brand, transactions=transactions)
+
+
+@app.route('/manager/amazon/<brand>/upload', methods=['POST'])
+@login_required
+def amazon_upload(brand):
+    """Upload and parse Amazon XML file."""
+    if 'xml_file' not in request.files:
+        flash('No file selected.', 'error')
+        return redirect(url_for('amazon_transactions', brand=brand))
+    
+    file = request.files['xml_file']
+    if file.filename == '':
+        flash('No file selected.', 'error')
+        return redirect(url_for('amazon_transactions', brand=brand))
+    
+    if not file.filename.endswith('.xml'):
+        flash('Please upload an XML file.', 'error')
+        return redirect(url_for('amazon_transactions', brand=brand))
+    
+    try:
+        # Parse XML
+        tree = ET.parse(file)
+        root = tree.getroot()
+        
+        bangkok_now = get_bangkok_now().replace(tzinfo=None)
+        transactions_added = 0
+        
+        # Find SettlementReport
+        for settlement in root.iter('SettlementReport'):
+            # Parse Orders
+            for order in settlement.findall('.//Order'):
+                order_id = order.findtext('AmazonOrderID', '')
+                marketplace = order.findtext('MarketplaceName', '')
+                
+                for fulfillment in order.findall('.//Fulfillment'):
+                    posted_date_str = fulfillment.findtext('PostedDate', '')
+                    posted_date = None
+                    if posted_date_str:
+                        try:
+                            posted_date = datetime.fromisoformat(posted_date_str.replace('+00:00', ''))
+                        except:
+                            pass
+                    
+                    for item in fulfillment.findall('.//Item'):
+                        sku = item.findtext('SKU', '')
+                        quantity = int(item.findtext('Quantity', '0') or 0)
+                        
+                        # Parse prices
+                        principal = shipping = tax = 0.0
+                        for component in item.findall('.//ItemPrice/Component'):
+                            comp_type = component.findtext('Type', '')
+                            amount = float(component.findtext('Amount', '0') or 0)
+                            if comp_type == 'Principal':
+                                principal = amount
+                            elif comp_type == 'Shipping':
+                                shipping = amount
+                            elif 'Tax' in comp_type and 'Facilitator' not in comp_type:
+                                tax = amount
+                        
+                        # Parse fees
+                        fba_fee = commission = other_fees = 0.0
+                        for fee in item.findall('.//ItemFees/Fee'):
+                            fee_type = fee.findtext('Type', '')
+                            amount = float(fee.findtext('Amount', '0') or 0)
+                            if 'FBA' in fee_type:
+                                fba_fee += amount
+                            elif 'Commission' in fee_type:
+                                commission += amount
+                            else:
+                                other_fees += amount
+                        
+                        total = principal + shipping + tax + fba_fee + commission + other_fees
+                        
+                        trans = AmazonTransaction(
+                            brand=brand,
+                            created_at=bangkok_now,
+                            amazon_order_id=order_id,
+                            posted_date=posted_date,
+                            transaction_type='Order',
+                            marketplace=marketplace,
+                            sku=sku,
+                            quantity=quantity,
+                            principal_amount=principal,
+                            shipping_amount=shipping,
+                            tax_amount=tax,
+                            fba_fee=fba_fee,
+                            commission_fee=commission,
+                            other_fees=other_fees,
+                            total_amount=total
+                        )
+                        db.session.add(trans)
+                        transactions_added += 1
+            
+            # Parse OtherTransaction
+            for other_trans in settlement.findall('.//OtherTransaction'):
+                trans_type = other_trans.findtext('TransactionType', '')
+                amount = float(other_trans.findtext('Amount', '0') or 0)
+                posted_date_str = other_trans.findtext('PostedDate', '')
+                posted_date = None
+                if posted_date_str:
+                    try:
+                        posted_date = datetime.fromisoformat(posted_date_str.replace('+00:00', ''))
+                    except:
+                        pass
+                
+                trans = AmazonTransaction(
+                    brand=brand,
+                    created_at=bangkok_now,
+                    amazon_order_id=other_trans.findtext('AmazonOrderID', ''),
+                    posted_date=posted_date,
+                    transaction_type='OtherTransaction',
+                    description=trans_type,
+                    total_amount=amount
+                )
+                db.session.add(trans)
+                transactions_added += 1
+            
+            # Parse AdvertisingTransactionDetails
+            for ad_trans in settlement.findall('.//AdvertisingTransactionDetails'):
+                trans_type = ad_trans.findtext('TransactionType', '')
+                amount = float(ad_trans.findtext('TransactionAmount', '0') or 0)
+                posted_date_str = ad_trans.findtext('PostedDate', '')
+                posted_date = None
+                if posted_date_str:
+                    try:
+                        posted_date = datetime.fromisoformat(posted_date_str.replace('+00:00', ''))
+                    except:
+                        pass
+                
+                trans = AmazonTransaction(
+                    brand=brand,
+                    created_at=bangkok_now,
+                    posted_date=posted_date,
+                    transaction_type='Advertising',
+                    description=trans_type,
+                    total_amount=amount
+                )
+                db.session.add(trans)
+                transactions_added += 1
+        
+        db.session.commit()
+        flash(f'Successfully imported {transactions_added} transactions.', 'success')
+    except Exception as e:
+        flash(f'Error parsing XML: {str(e)}', 'error')
+    
+    return redirect(url_for('amazon_transactions', brand=brand))
+
+
+@app.route('/manager/amazon/<brand>/download')
+@login_required
+def amazon_download(brand):
+    """Download Amazon transactions as CSV."""
+    transactions = AmazonTransaction.query.filter_by(brand=brand)\
+        .order_by(AmazonTransaction.posted_date.desc()).all()
+    
+    if not transactions:
+        flash('No data to export.', 'info')
+        return redirect(url_for('amazon_transactions', brand=brand))
+    
+    data = [t.to_dict() for t in transactions]
+    df = pd.DataFrame(data)
+    csv_data = df.to_csv(index=False)
+    
+    return Response(
+        csv_data,
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment; filename={brand}_amazon_transactions.csv'}
+    )
+
+
+@app.route('/manager/shipment')
+@login_required
+def shipment_cost_select():
+    """Select brand for shipment costs."""
+    return render_template('shipment_select.html', brands=BRANDS)
+
+
+@app.route('/manager/shipment/<brand>')
+@login_required
+def shipment_cost(brand):
+    """View shipment costs for a brand."""
+    costs = ShipmentCost.query.filter_by(brand=brand)\
+        .order_by(ShipmentCost.cost_date.desc()).all()
+    return render_template('shipment_cost.html', brand=brand, costs=costs)
+
+
+@app.route('/manager/shipment/<brand>/submit', methods=['POST'])
+@login_required
+def shipment_submit(brand):
+    """Submit new shipment cost."""
+    try:
+        cost_date_str = request.form.get('cost_date', '')
+        cost_date = datetime.strptime(cost_date_str, '%Y-%m-%d').date() if cost_date_str else None
+        
+        cost = ShipmentCost(
+            brand=brand,
+            created_at=get_bangkok_now().replace(tzinfo=None),
+            cost_date=cost_date,
+            product=request.form.get('product', '').strip(),
+            cost_type=request.form.get('cost_type', ''),
+            total_amount=float(request.form.get('total_amount', 0) or 0)
+        )
+        
+        db.session.add(cost)
+        db.session.commit()
+        flash('Cost saved successfully!', 'success')
+    except Exception as e:
+        flash(f'Error saving cost: {str(e)}', 'error')
+    
+    return redirect(url_for('shipment_cost', brand=brand))
+
+
+@app.route('/manager/shipment/<brand>/download')
+@login_required
+def shipment_download(brand):
+    """Download shipment costs as CSV."""
+    costs = ShipmentCost.query.filter_by(brand=brand)\
+        .order_by(ShipmentCost.cost_date.desc()).all()
+    
+    if not costs:
+        flash('No data to export.', 'info')
+        return redirect(url_for('shipment_cost', brand=brand))
+    
+    data = [c.to_dict() for c in costs]
+    df = pd.DataFrame(data)
+    csv_data = df.to_csv(index=False)
+    
+    return Response(
+        csv_data,
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment; filename={brand}_shipment_costs.csv'}
+    )
 
 
 @app.route('/manager/export/csv')

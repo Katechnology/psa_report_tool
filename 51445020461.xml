@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AmazonEnvelope xmlns:java="http://xml.apache.org/xalan/java" xmlns:amzn="http://www.amazon.com/XSL/Transform/Extensions" xmlns:xalan="http://xml.apache.org/xslt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amzn-envelope.xsd"><Header><DocumentVersion>'4.01'</DocumentVersion><MerchantIdentifier>'1120463584102'</MerchantIdentifier></Header><MessageType>SettlementReport</MessageType><Message><MessageID>1</MessageID><SettlementReport>
+<SettlementData>
+<AmazonSettlementID>24329738771</AmazonSettlementID>
+<TotalAmount currency="USD">-43.58</TotalAmount>
+<StartDate>2025-12-25T02:30:15+00:00</StartDate>
+<EndDate>2026-01-08T02:30:15+00:00</EndDate>
+<DepositDate>2026-01-10T02:30:15+00:00</DepositDate>
+</SettlementData>
+<Order>
+<AmazonOrderID>114-1476103-8119404</AmazonOrderID>
+<MerchantOrderID>114-1476103-8119404</MerchantOrderID>
+<ShipmentID>PHyDSQwF7</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2026-01-07T16:19:59+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150662531283361</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.10</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.10</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>111-1267870-0511463</AmazonOrderID>
+<MerchantOrderID>111-1267870-0511463</MerchantOrderID>
+<ShipmentID>PqtlpD55s</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-27T02:52:06+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150109131821241</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.50</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.50</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>113-5558689-6846601</AmazonOrderID>
+<MerchantOrderID>113-5558689-6846601</MerchantOrderID>
+<ShipmentID>PkdjrrlWL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-27T11:14:04+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150285193691641</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>111-6947061-4661845</AmazonOrderID>
+<MerchantOrderID>111-6947061-4661845</MerchantOrderID>
+<ShipmentID>Ps6tDdZhL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-27T18:43:00+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150290471690401</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.35</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.35</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>114-2944925-9080230</AmazonOrderID>
+<MerchantOrderID>114-2944925-9080230</MerchantOrderID>
+<ShipmentID>PWl4Kmlwr</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2026-01-05T21:34:52+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150886837760601</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.40</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.40</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>113-1697433-1200226</AmazonOrderID>
+<MerchantOrderID>113-1697433-1200226</MerchantOrderID>
+<ShipmentID>PsVDJ7rCL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-28T19:22:43+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150285172876001</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>114-9367259-4353831</AmazonOrderID>
+<MerchantOrderID>114-9367259-4353831</MerchantOrderID>
+<ShipmentID>PxGWZ1SDL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-30T09:43:16+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150372196260681</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Shipping</Type>
+<Amount currency="USD">3.05</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+<Promotion>
+<MerchantPromotionID></MerchantPromotionID>
+<Type>Shipping</Type>
+<Amount currency="USD">-3.05</Amount>
+</Promotion>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>114-8940561-2550611</AmazonOrderID>
+<MerchantOrderID>114-8940561-2550611</MerchantOrderID>
+<ShipmentID>PBpgzvWFL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-27T09:44:52+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150119037063041</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-0.33</Amount>
+</Fee>
+</ItemFees>
+<Promotion>
+<MerchantPromotionID>vine.enrollment.f09743fe-f290-49b6-bdf1-de83173249bd:1764820869815</MerchantPromotionID>
+<Type>Principal</Type>
+<Amount currency="USD">-19.99</Amount>
+</Promotion>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>112-6883861-1966661</AmazonOrderID>
+<MerchantOrderID>112-6883861-1966661</MerchantOrderID>
+<ShipmentID>PvZcWRdM7</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-29T22:27:05+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150310257884481</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.30</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.30</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>111-0572920-5882626</AmazonOrderID>
+<MerchantOrderID>111-0572920-5882626</MerchantOrderID>
+<ShipmentID>PxbFrgKPs</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-26T19:48:35+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150253147043441</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">1.12</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-1.12</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>111-2040705-8002667</AmazonOrderID>
+<MerchantOrderID>111-2040705-8002667</MerchantOrderID>
+<ShipmentID>P7J3xgM2r</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2026-01-05T20:40:04+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150983093365521</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">0.25</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-0.25</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<Order>
+<AmazonOrderID>111-7950622-6125822</AmazonOrderID>
+<MerchantOrderID>111-7950622-6125822</MerchantOrderID>
+<ShipmentID>P4bLc5ztL</ShipmentID>
+<MarketplaceName>Amazon.com</MarketplaceName>
+<Fulfillment>
+<MerchantFulfillmentID>AFN</MerchantFulfillmentID>
+<PostedDate>2025-12-26T20:14:32+00:00</PostedDate>
+<Item>
+<AmazonOrderItemCode>150278900426001</AmazonOrderItemCode>
+<SKU>5M-4G5M-3M97</SKU>
+<Quantity>1</Quantity>
+<ItemPrice>
+<Component>
+<Type>Principal</Type>
+<Amount currency="USD">19.99</Amount>
+</Component>
+<Component>
+<Type>Shipping</Type>
+<Amount currency="USD">6.99</Amount>
+</Component>
+<Component>
+<Type>Tax</Type>
+<Amount currency="USD">0.84</Amount>
+</Component>
+<Component>
+<Type>ShippingTax</Type>
+<Amount currency="USD">0.30</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Shipping</Type>
+<Amount currency="USD">-0.30</Amount>
+</Component>
+<Component>
+<Type>MarketplaceFacilitatorTax-Principal</Type>
+<Amount currency="USD">-0.84</Amount>
+</Component>
+</ItemPrice>
+<ItemFees>
+<Fee>
+<Type>FBAPerUnitFulfillmentFee</Type>
+<Amount currency="USD">-4.16</Amount>
+</Fee>
+<Fee>
+<Type>Commission</Type>
+<Amount currency="USD">-3.30</Amount>
+</Fee>
+<Fee>
+<Type>ShippingChargeback</Type>
+<Amount currency="USD">-6.99</Amount>
+</Fee>
+</ItemFees>
+</Item>
+</Fulfillment>
+</Order>
+<OtherTransaction>
+<AmazonOrderID>FBA193N6FZ8C</AmazonOrderID>
+<TransactionType>FBA Inbound Placement Service Fee</TransactionType>
+<ShipmentID>FBA193N6FZ8C</ShipmentID>
+<TransactionID>738384440219</TransactionID>
+<PostedDate>2026-01-03T18:14:42+00:00</PostedDate>
+<Amount currency="USD">-36.00</Amount>
+</OtherTransaction>
+<OtherTransaction>
+<TransactionType>Subscription Fee</TransactionType>
+<TransactionID>ContSubscription_1120463584102_1_20260107_SILVER</TransactionID>
+<PostedDate>2026-01-07T05:08:37+00:00</PostedDate>
+<Amount currency="USD">-43.99</Amount>
+</OtherTransaction>
+<OtherTransaction>
+<TransactionType>Previous Reserve Amount Balance</TransactionType>
+<TransactionID>24329738751_CREDIT</TransactionID>
+<PostedDate>2025-12-25T02:30:22+00:00</PostedDate>
+<Amount currency="USD">25.06</Amount>
+</OtherTransaction>
+<AdvertisingTransactionDetails>
+<TransactionType>Cost of Advertising</TransactionType>
+<PostedDate>2025-12-25T05:49:55+00:00</PostedDate>
+<InvoiceId>519573612DPA25</InvoiceId>
+<BaseAmount currency="USD">-25.04</BaseAmount>
+<TaxAmount currency="USD">-2.50</TaxAmount>
+<TransactionAmount currency="USD">-27.54</TransactionAmount>
+</AdvertisingTransactionDetails>
+<AdvertisingTransactionDetails>
+<TransactionType>Cost of Advertising</TransactionType>
+<PostedDate>2026-01-02T11:28:35+00:00</PostedDate>
+<InvoiceId>2150262DPA26</InvoiceId>
+<BaseAmount currency="USD">-32.66</BaseAmount>
+<TaxAmount currency="USD">-3.27</TaxAmount>
+<TransactionAmount currency="USD">-35.93</TransactionAmount>
+</AdvertisingTransactionDetails>
+<AdvertisingTransactionDetails>
+<TransactionType>Cost of Advertising</TransactionType>
+<PostedDate>2025-12-25T12:40:15+00:00</PostedDate>
+<InvoiceId>519797622DPA25</InvoiceId>
+<BaseAmount currency="USD">-62.20</BaseAmount>
+<TaxAmount currency="USD">-6.22</TaxAmount>
+<TransactionAmount currency="USD">-68.42</TransactionAmount>
+</AdvertisingTransactionDetails>
+</SettlementReport></Message></AmazonEnvelope>

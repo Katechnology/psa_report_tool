@@ -107,3 +107,89 @@ class DailyReport(db.Model):
             'store_status_mexico': self.store_status_mexico,
             'store_status_canada': self.store_status_canada
         }
+
+
+class AmazonTransaction(db.Model):
+    """Model for Amazon settlement transactions parsed from XML."""
+    
+    __tablename__ = 'amazon_transactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String(100), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    
+    # Transaction info
+    amazon_order_id = db.Column(db.String(50), nullable=True)
+    posted_date = db.Column(db.DateTime, nullable=True)
+    transaction_type = db.Column(db.String(100), nullable=False)  # Order, OtherTransaction, Advertising
+    marketplace = db.Column(db.String(50), nullable=True)
+    
+    # Item info (for orders)
+    sku = db.Column(db.String(100), nullable=True)
+    quantity = db.Column(db.Integer, nullable=True, default=0)
+    
+    # Amounts
+    principal_amount = db.Column(db.Float, nullable=True, default=0.0)
+    shipping_amount = db.Column(db.Float, nullable=True, default=0.0)
+    tax_amount = db.Column(db.Float, nullable=True, default=0.0)
+    commission_fee = db.Column(db.Float, nullable=True, default=0.0)
+    fba_fee = db.Column(db.Float, nullable=True, default=0.0)
+    other_fees = db.Column(db.Float, nullable=True, default=0.0)
+    total_amount = db.Column(db.Float, nullable=True, default=0.0)
+    
+    # Description for non-order transactions
+    description = db.Column(db.String(200), nullable=True)
+    
+    def __repr__(self):
+        return f'<AmazonTransaction {self.brand} - {self.transaction_type} - {self.total_amount}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'brand': self.brand,
+            'created_at': self.created_at.strftime('%d/%m/%Y %H:%M:%S') if self.created_at else None,
+            'amazon_order_id': self.amazon_order_id,
+            'posted_date': self.posted_date.strftime('%d/%m/%Y %H:%M:%S') if self.posted_date else None,
+            'transaction_type': self.transaction_type,
+            'marketplace': self.marketplace,
+            'sku': self.sku,
+            'quantity': self.quantity,
+            'principal_amount': self.principal_amount,
+            'shipping_amount': self.shipping_amount,
+            'tax_amount': self.tax_amount,
+            'commission_fee': self.commission_fee,
+            'fba_fee': self.fba_fee,
+            'other_fees': self.other_fees,
+            'total_amount': self.total_amount,
+            'description': self.description
+        }
+
+
+class ShipmentCost(db.Model):
+    """Model for manual shipment/order cost entries."""
+    
+    __tablename__ = 'shipment_costs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String(100), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    
+    # Cost details
+    cost_date = db.Column(db.Date, nullable=False)
+    product = db.Column(db.String(200), nullable=False)
+    cost_type = db.Column(db.String(100), nullable=False)
+    total_amount = db.Column(db.Float, nullable=False, default=0.0)
+    
+    def __repr__(self):
+        return f'<ShipmentCost {self.brand} - {self.product} - {self.total_amount}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'brand': self.brand,
+            'created_at': self.created_at.strftime('%d/%m/%Y %H:%M:%S') if self.created_at else None,
+            'cost_date': self.cost_date.strftime('%d/%m/%Y') if self.cost_date else None,
+            'product': self.product,
+            'cost_type': self.cost_type,
+            'total_amount': self.total_amount
+        }

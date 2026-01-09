@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand }} - Shipment Costs{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <a href="{{ url_for('shipment_cost_select') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+        </a>
+        <h1 class="page-title">{{ brand }}</h1>
+        <p class="page-subtitle">Orders/Shipment Costs</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-section">
+        <div class="action-buttons">
+            <button type="button" class="btn btn-primary" onclick="toggleForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Submit Cost
+            </button>
+
+            <a href="{{ url_for('shipment_download', brand=brand) }}" class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download CSV
+            </a>
+        </div>
+
+        <!-- Submit Form (Hidden by default) -->
+        <div class="cost-form-container" id="costFormContainer" style="display: none;">
+            <form action="{{ url_for('shipment_submit', brand=brand) }}" method="POST" class="cost-form">
+                <h3 class="form-title">Submit New Cost</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cost_date" class="form-label">Date <span class="required">*</span></label>
+                        <input type="date" class="form-control" id="cost_date" name="cost_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product" class="form-label">Product <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="product" name="product" placeholder="Product name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cost_type" class="form-label">Type of Cost <span class="required">*</span></label>
+                        <select class="form-control form-select" id="cost_type" name="cost_type" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="Shipping">Shipping</option>
+                            <option value="Packaging">Packaging</option>
+                            <option value="Customs">Customs</option>
+                            <option value="Storage">Storage</option>
+                            <option value="Insurance">Insurance</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="total_amount" class="form-label">Total ($) <span class="required">*</span></label>
+                        <input type="number" class="form-control" id="total_amount" name="total_amount"
+                            placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="toggleForm()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Cost</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Costs Table -->
+    <div class="table-container">
+        <h3 class="table-title">Cost Records</h3>
+        {% if costs %}
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                        <th>Added</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cost in costs %}
+                    <tr>
+                        <td>{{ cost.cost_date.strftime('%d/%m/%Y') if cost.cost_date else '-' }}</td>
+                        <td>{{ cost.product }}</td>
+                        <td><span class="type-badge">{{ cost.cost_type }}</span></td>
+                        <td class="amount">${{ "%.2f"|format(cost.total_amount or 0) }}</td>
+                        <td class="date-muted">{{ cost.created_at.strftime('%d/%m/%Y') if cost.created_at else '-' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <rect x="1" y="3" width="15" height="13" />
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+            <p>No costs recorded yet. Click "Submit Cost" to add one.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .action-section {
+        margin-bottom: 2rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .action-buttons .btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .cost-form-container {
+        background: var(--surface-secondary);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .form-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .table-container {
+        background: var(--surface-secondary);
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+
+    .table-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+
+    .type-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: rgba(100, 100, 100, 0.2);
+        color: var(--text-secondary);
+    }
+
+    .amount {
+        font-family: monospace;
+        font-weight: 600;
+    }
+
+    .date-muted {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+    }
+
+    .no-data svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleForm() {
+        const container = document.getElementById('costFormContainer');
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+{% endblock %}
