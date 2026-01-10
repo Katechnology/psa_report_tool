@@ -4,6 +4,14 @@
 
 {% block content %}
 <div class="landing-page">
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='video_motion.mp4') }}" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
     <div class="hero-section">
         <div class="logo-container">
             <div class="logo-icon">
