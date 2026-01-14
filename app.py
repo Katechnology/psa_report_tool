@@ -199,8 +199,8 @@ def manager_daily():
                 # Parse date from HTML5 date picker (YYYY-MM-DD format)
                 selected_date = datetime.strptime(date_str, '%Y-%m-%d').date()
                 
-                # Query reports for selected date
-                reports = DailyReport.query.filter_by(report_date=selected_date)\
+                # Query reports for selected date (using date_report field entered by user)
+                reports = DailyReport.query.filter_by(date_report=date_str)\
                     .order_by(DailyReport.created_at.desc()).all()
                 
                 if reports:
@@ -572,9 +572,9 @@ def shipment_download(brand):
 @login_required
 def export_csv():
     """Export all data as CSV."""
-    # Query all reports
+    # Query all reports sorted by date_report (user-entered date)
     reports = DailyReport.query.order_by(
-        DailyReport.report_date, 
+        DailyReport.date_report, 
         DailyReport.created_at
     ).all()
     
@@ -726,8 +726,8 @@ def generate_brand_charts(reports, brand):
     data = [r.to_dict() for r in reports]
     df = pd.DataFrame(data)
     
-    # Convert report_date back to datetime for proper sorting
-    df['date'] = pd.to_datetime(df['report_date'], format='%d/%m/%Y')
+    # Convert date_report to datetime for proper sorting (date_report is YYYY-MM-DD from HTML5 date picker)
+    df['date'] = pd.to_datetime(df['date_report'], format='%Y-%m-%d', errors='coerce')
     
     # Aggregate by date (in case multiple entries per day)
     agg_df = df.groupby('date').agg({
