@@ -13,7 +13,7 @@
             Back to Dashboard
         </a>
         <h1 class="page-title">Fulfilment Status</h1>
-        <p class="page-subtitle">Brand inventory priorities based on Days of Stock</p>
+        <p class="page-subtitle">Product inventory priorities based on Days of Stock</p>
     </div>
 
     <div class="fulfilment-container">
@@ -50,31 +50,32 @@
                         </svg>
                     </div>
                     <h2 class="column-title">Safe</h2>
-                    <span class="column-count">{{ safe_brands|length }} brands</span>
+                    <span class="column-count">{{ safe_products|length }} products</span>
                 </div>
                 <div class="brand-list">
-                    {% if safe_brands %}
-                    {% for brand in safe_brands %}
+                    {% if safe_products %}
+                    {% for product in safe_products %}
                     <div class="brand-card safe-card">
-                        <div class="brand-name">{{ brand.name }}</div>
+                        <div class="brand-name">{{ product.name }}</div>
+                        <div class="product-brand">{{ product.brand }}</div>
                         <div class="brand-stats">
                             <div class="stat">
                                 <span class="stat-label">Inventory</span>
-                                <span class="stat-value">{{ brand.inventory }}</span>
+                                <span class="stat-value">{{ product.inventory }}</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-label">Avg Orders/Day</span>
-                                <span class="stat-value">{{ "%.1f"|format(brand.avg_orders) }}</span>
+                                <span class="stat-value">{{ "%.1f"|format(product.avg_orders) }}</span>
                             </div>
                             <div class="stat highlight">
                                 <span class="stat-label">Days of Stock</span>
-                                <span class="stat-value">{{ "%.0f"|format(brand.days_of_stock) }}</span>
+                                <span class="stat-value">{{ "%.0f"|format(product.days_of_stock) }}</span>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                     {% else %}
-                    <div class="no-brands">No brands in safe status</div>
+                    <div class="no-brands">No products in safe status</div>
                     {% endif %}
                 </div>
             </div>
@@ -92,31 +93,32 @@
                         </svg>
                     </div>
                     <h2 class="column-title">Urgent</h2>
-                    <span class="column-count">{{ urgent_brands|length }} brands</span>
+                    <span class="column-count">{{ urgent_products|length }} products</span>
                 </div>
                 <div class="brand-list">
-                    {% if urgent_brands %}
-                    {% for brand in urgent_brands %}
+                    {% if urgent_products %}
+                    {% for product in urgent_products %}
                     <div class="brand-card urgent-card">
-                        <div class="brand-name">{{ brand.name }}</div>
+                        <div class="brand-name">{{ product.name }}</div>
+                        <div class="product-brand">{{ product.brand }}</div>
                         <div class="brand-stats">
                             <div class="stat">
                                 <span class="stat-label">Inventory</span>
-                                <span class="stat-value">{{ brand.inventory }}</span>
+                                <span class="stat-value">{{ product.inventory }}</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-label">Avg Orders/Day</span>
-                                <span class="stat-value">{{ "%.1f"|format(brand.avg_orders) }}</span>
+                                <span class="stat-value">{{ "%.1f"|format(product.avg_orders) }}</span>
                             </div>
                             <div class="stat highlight urgent">
                                 <span class="stat-label">Days of Stock</span>
-                                <span class="stat-value">{{ "%.0f"|format(brand.days_of_stock) }}</span>
+                                <span class="stat-value">{{ "%.0f"|format(product.days_of_stock) }}</span>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                     {% else %}
-                    <div class="no-brands">No brands need urgent fulfilment</div>
+                    <div class="no-brands">No products need urgent fulfilment</div>
                     {% endif %}
                 </div>
             </div>
@@ -264,8 +266,14 @@
     .brand-name {
         font-weight: 600;
         font-size: 1rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.25rem;
         color: var(--text-primary);
+    }
+
+    .product-brand {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
     }
 
     .brand-stats {

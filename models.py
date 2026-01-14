@@ -21,6 +21,7 @@ class DailyReport(db.Model):
     # Basic Information
     employee_name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(100), nullable=False, index=True)
+    product = db.Column(db.String(200), nullable=False, index=True)  # Product name
     date_report = db.Column(db.String(20), nullable=True)  # User-typed date
     current_balance = db.Column(db.Float, nullable=False, default=0.0)
     release_date_balance = db.Column(db.String(20), nullable=True)  # Date money transferred
@@ -78,6 +79,7 @@ class DailyReport(db.Model):
             'created_at': self.created_at.strftime('%d/%m/%Y %H:%M:%S') if self.created_at else None,
             'employee_name': self.employee_name,
             'brand': self.brand,
+            'product': self.product,
             'date_report': self.date_report,
             'current_balance': self.current_balance,
             'release_date_balance': self.release_date_balance,

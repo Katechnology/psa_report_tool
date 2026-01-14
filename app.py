@@ -12,11 +12,44 @@ import xml.etree.ElementTree as ET
 from config import Config
 from models import db, DailyReport, AmazonTransaction, ShipmentCost, get_bangkok_now
 
-# Brand list for dropdowns
+# Brand list for dropdowns (removed FEMBURN)
 BRANDS = [
     'ENERZAA', 'LUVOST', 'PEAKSHILAJIT', 'BOXOOS', 'CYLEOX', 'ROBURSTAGE',
-    'CHICADDONS', 'FEMBURN', 'ORANIC EXTRACT', 'ZOVOST', 'VITALIXHAIR', 'SYLIARIX'
+    'CHICADDONS', 'ORANIC EXTRACT', 'ZOVOST', 'VITALIXHAIR', 'SYLIARIX'
 ]
+
+# Employee → Brand mapping
+EMPLOYEE_BRAND_MAP = {
+    'Mai Phương': 'ENERZAA',
+    'Việt Khanh': 'LUVOST',
+    'Quỳnh Anh': 'PEAKSHILAJIT',
+    'Nhi (Boxoos)': 'BOXOOS',
+    'Thảo (Cyleox)': 'CYLEOX',
+    'Hoàng Thư': 'ROBURSTAGE',
+    'Diệu Anh': 'CHICADDONS',
+    'Uyên Vi': 'ORANIC EXTRACT',
+    'Phạm Thảo': 'ZOVOST',
+    'Lan Anh': 'VITALIXHAIR',
+    'Thảo Tiên': 'SYLIARIX'
+}
+
+# Brand → Products mapping
+BRAND_PRODUCTS_MAP = {
+    'ENERZAA': ['Creatine Complex Gummies'],
+    'VITALIXHAIR': ['Vitalix Hair Oil (yellow)', 'Vitalix Hair Growth (pink)'],
+    'SYLIARIX': ['Brain Booster'],
+    'CHICADDONS': ['ChicAddOns Mullein'],
+    'CYLEOX': ['Night time fat burner', 'Balance Gummies'],
+    'ORANIC EXTRACT': ['Pure Shilajit Gummies', '3 in 1 Wellness Gummies'],
+    'LUVOST': ['Luvost Liquid Drops', 'Luvost Sea Moss'],
+    'BOXOOS': ['Estrogen Control'],
+    'ROBURSTAGE': ['Pure NMN'],
+    'PEAKSHILAJIT': ['SHILAJIT GUMMY PLATINUM'],
+    'ZOVOST': ['Super Blend']
+}
+
+# All products list for charts
+ALL_PRODUCTS = [p for products in BRAND_PRODUCTS_MAP.values() for p in products]
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -69,14 +102,20 @@ def employee():
             # Get Bangkok time
             bangkok_now = get_bangkok_now()
             
+            # Get employee name and lookup brand
+            employee_name = request.form.get('employee_name', '').strip()
+            brand = EMPLOYEE_BRAND_MAP.get(employee_name, request.form.get('brand', '').strip())
+            product = request.form.get('product', '').strip()
+            
             # Create new report with all fields
             report = DailyReport(
                 report_date=bangkok_now.date(),
                 created_at=bangkok_now.replace(tzinfo=None),  # Store without timezone
                 
                 # Basic Information
-                employee_name=request.form.get('employee_name', '').strip(),
-                brand=request.form.get('brand', '').strip(),
+                employee_name=employee_name,
+                brand=brand,
+                product=product,
                 date_report=request.form.get('date_report', '').strip(),
                 current_balance=float(request.form.get('current_balance', 0) or 0),
                 release_date_balance=request.form.get('release_date_balance', '').strip(),
@@ -227,7 +266,7 @@ def manager_overall():
         .distinct()\
         .order_by(DailyReport.brand)\
         .all()
-    brands = [b[0] for b in brands]
+    brands = [b[0] for b in brands if b[0]]
     
     return render_template('overall_report.html', brands=brands)
 
@@ -241,11 +280,11 @@ def manager_overall_brand(brand):
         .distinct()\
         .order_by(DailyReport.brand)\
         .all()
-    brands = [b[0] for b in brands]
+    brands = [b[0] for b in brands if b[0]]
     
     # Get reports for selected brand
     reports = DailyReport.query.filter_by(brand=brand)\
-        .order_by(DailyReport.report_date, DailyReport.created_at)\
+        .order_by(DailyReport.date_report, DailyReport.created_at)\
         .all()
     
     charts_json = None
@@ -261,17 +300,17 @@ def manager_overall_brand(brand):
 @app.route('/manager/fulfilment')
 @login_required
 def manager_fulfilment():
-    """Manager fulfilment view - categorizes brands by inventory status."""
-    # Get all unique brands
-    brands = db.session.query(DailyReport.brand).distinct().all()
-    brands = [b[0] for b in brands]
+    """Manager fulfilment view - categorizes products by inventory status."""
+    # Get all unique products
+    products = db.session.query(DailyReport.product).distinct().all()
+    products = [p[0] for p in products if p[0]]
     
-    safe_brands = []
-    urgent_brands = []
+    safe_products = []
+    urgent_products = []
     
-    for brand_name in brands:
-        # Get the latest report for this brand
-        latest_report = DailyReport.query.filter_by(brand=brand_name)\
+    for product_name in products:
+        # Get the latest report for this product
+        latest_report = DailyReport.query.filter_by(product=product_name)\
             .order_by(DailyReport.created_at.desc())\
             .first()
         
@@ -285,8 +324,9 @@ def manager_fulfilment():
             else:
                 days_of_stock = float('inf') if inventory > 0 else 0
             
-            brand_data = {
-                'name': brand_name,
+            product_data = {
+                'name': product_name,
+                'brand': latest_report.brand,
                 'inventory': inventory,
                 'avg_orders': avg_orders,
                 'days_of_stock': days_of_stock if days_of_stock != float('inf') else 999
@@ -294,18 +334,18 @@ def manager_fulfilment():
             
             # Categorize: <= 60 days = Urgent, > 60 days = Safe
             if days_of_stock <= 60:
-                urgent_brands.append(brand_data)
+                urgent_products.append(product_data)
             else:
-                safe_brands.append(brand_data)
+                safe_products.append(product_data)
     
     # Sort urgent by days_of_stock (lowest first - most urgent)
-    urgent_brands.sort(key=lambda x: x['days_of_stock'])
+    urgent_products.sort(key=lambda x: x['days_of_stock'])
     # Sort safe by days_of_stock (lowest first)
-    safe_brands.sort(key=lambda x: x['days_of_stock'])
+    safe_products.sort(key=lambda x: x['days_of_stock'])
     
     return render_template('fulfilment.html',
-                         safe_brands=safe_brands,
-                         urgent_brands=urgent_brands)
+                         safe_products=safe_products,
+                         urgent_products=urgent_products)
 
 
 # =============================================================================
@@ -590,6 +630,7 @@ def export_csv():
             'created_at': r.created_at.strftime('%d/%m/%Y %H:%M:%S'),
             'employee_name': r.employee_name,
             'brand': r.brand,
+            'product': r.product,
             'date_report': r.date_report,
             'current_balance': r.current_balance,
             'release_date_balance': r.release_date_balance,
@@ -643,13 +684,13 @@ def generate_daily_charts(reports):
     data = [r.to_dict() for r in reports]
     df = pd.DataFrame(data)
     
-    # Aggregate by brand
+    # Aggregate by brand (Balance, ACOS, Ads Spend are brand-level)
     agg_df = df.groupby('brand').agg({
-        'current_balance': 'sum',
+        'current_balance': 'first',  # Same for all products in brand
         'new_orders': 'sum',
-        'ads_spend_total': 'sum',
+        'ads_spend_total': 'first',  # Same for all products in brand
         'ads_sales_today': 'sum',
-        'acos': 'mean'
+        'acos': 'first'  # Same for all products in brand
     }).reset_index()
     
     charts = {}
@@ -669,7 +710,7 @@ def generate_daily_charts(reports):
     )
     charts['balance'] = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # New Orders by Brand
+    # New Orders by Brand (sum of all products)
     fig2 = px.bar(agg_df, x='brand', y='new_orders', 
                   title='New Orders by Brand',
                   color='brand', color_discrete_sequence=colors)
@@ -693,7 +734,7 @@ def generate_daily_charts(reports):
     )
     charts['ads_spend'] = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     
-    # Ads Sales Today by Brand
+    # Ads Sales Today by Brand (sum of all products)
     fig4 = px.bar(agg_df, x='brand', y='ads_sales_today', 
                   title='Ads Sales Today by Brand ($)',
                   color='brand', color_discrete_sequence=colors)
@@ -730,11 +771,12 @@ def generate_brand_charts(reports, brand):
     df['date'] = pd.to_datetime(df['date_report'], format='%Y-%m-%d', errors='coerce')
     
     # Aggregate by date (in case multiple entries per day)
+    # Balance, Ads Spend, ACOS are brand-level (use 'first'), Orders are summed
     agg_df = df.groupby('date').agg({
-        'current_balance': 'sum',
+        'current_balance': 'first',  # Brand-level value
         'new_orders': 'sum',
-        'ads_spend_total': 'sum',
-        'acos': 'mean'
+        'ads_spend_total': 'first',  # Brand-level value
+        'acos': 'first'  # Brand-level value
     }).reset_index()
     
     agg_df = agg_df.sort_values('date')

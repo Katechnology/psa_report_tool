@@ -27,36 +27,45 @@
                         <label for="employee_name" class="form-label">
                             Employee Name <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-control" id="employee_name" name="employee_name"
-                            placeholder="Enter your full name" required>
+                        <select class="form-control form-select" id="employee_name" name="employee_name" required
+                            onchange="updateBrandAndProducts()">
+                            <option value="">-- Select Your Name --</option>
+                            <option value="Mai Phương">Mai Phương</option>
+                            <option value="Việt Khanh">Việt Khanh</option>
+                            <option value="Quỳnh Anh">Quỳnh Anh</option>
+                            <option value="Nhi (Boxoos)">Nhi (Boxoos)</option>
+                            <option value="Thảo (Cyleox)">Thảo (Cyleox)</option>
+                            <option value="Hoàng Thư">Hoàng Thư</option>
+                            <option value="Diệu Anh">Diệu Anh</option>
+                            <option value="Uyên Vi">Uyên Vi</option>
+                            <option value="Phạm Thảo">Phạm Thảo</option>
+                            <option value="Lan Anh">Lan Anh</option>
+                            <option value="Thảo Tiên">Thảo Tiên</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="brand" class="form-label">
                             Brand <span class="required">*</span>
                         </label>
-                        <select class="form-control form-select" id="brand" name="brand" required>
-                            <option value="">-- Select Brand --</option>
-                            <option value="ENERZAA">ENERZAA</option>
-                            <option value="LUVOST">LUVOST</option>
-                            <option value="PEAKSHILAJIT">PEAKSHILAJIT</option>
-                            <option value="BOXOOS">BOXOOS</option>
-                            <option value="CYLEOX">CYLEOX</option>
-                            <option value="ROBURSTAGE">ROBURSTAGE</option>
-                            <option value="CHICADDONS">CHICADDONS</option>
-                            <option value="FEMBURN">FEMBURN</option>
-                            <option value="ORANIC EXTRACT">ORANIC EXTRACT</option>
-                            <option value="ZOVOST">ZOVOST</option>
-                            <option value="VITALIXHAIR">VITALIXHAIR</option>
-                            <option value="SYLIARIX">SYLIARIX</option>
+                        <input type="text" class="form-control" id="brand" name="brand" readonly
+                            placeholder="(Auto-assigned)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product" class="form-label">
+                            Product <span class="required">*</span>
+                        </label>
+                        <select class="form-control form-select" id="product" name="product" required>
+                            <option value="">-- Select Name First --</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="date_report" class="form-label">
-                            Date Report
+                            Date Report <span class="required">*</span>
                         </label>
-                        <input type="date" class="form-control" id="date_report" name="date_report">
+                        <input type="date" class="form-control" id="date_report" name="date_report" required>
                     </div>
 
                     <div class="form-group">
@@ -69,9 +78,10 @@
 
                     <div class="form-group">
                         <label for="release_date_balance" class="form-label">
-                            Release Date of Balance
+                            Release Date of Balance <span class="required">*</span>
                         </label>
-                        <input type="date" class="form-control" id="release_date_balance" name="release_date_balance">
+                        <input type="date" class="form-control" id="release_date_balance" name="release_date_balance"
+                            required>
                     </div>
                 </div>
             </div>
@@ -82,18 +92,18 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="new_orders" class="form-label">
-                            New Orders
+                            New Orders <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="new_orders" name="new_orders" placeholder="0"
-                            min="0">
+                            min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="vine_total_orders" class="form-label">
-                            Vine (Total Orders)
+                            Vine (Total Orders) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="vine_total_orders" name="vine_total_orders"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
@@ -106,7 +116,7 @@
 
                     <div class="form-group">
                         <label for="average_orders_30_days" class="form-label">
-                            Average Orders (Last 30 Days) <span class="required">*</span>
+                            Average Units Per Day (Last 30 Days) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="average_orders_30_days"
                             name="average_orders_30_days" placeholder="0.0" step="0.01" min="0" required>
@@ -114,26 +124,26 @@
 
                     <div class="form-group">
                         <label for="total_unit_sales" class="form-label">
-                            Total Unit Sales
+                            Total Unit Sales <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="total_unit_sales" name="total_unit_sales"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="new_reviews" class="form-label">
-                            New Reviews
+                            New Reviews <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="new_reviews" name="new_reviews" placeholder="0"
-                            min="0">
+                            min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="average_rating" class="form-label">
-                            Average Rating (on listing)
+                            Average Rating (on listing) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="average_rating" name="average_rating"
-                            placeholder="0.0" step="0.1" min="0" max="5">
+                            placeholder="0.0" step="0.1" min="0" max="5" required>
                     </div>
                 </div>
             </div>
@@ -144,18 +154,18 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="main_niche_ranking" class="form-label">
-                            Main Niche Ranking
+                            Main Niche Ranking <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="main_niche_ranking" name="main_niche_ranking"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="sub_niche_ranking" class="form-label">
-                            Sub Niche Ranking
+                            Sub Niche Ranking <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="sub_niche_ranking" name="sub_niche_ranking"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
                 </div>
             </div>
@@ -166,42 +176,42 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="ads_spend_total" class="form-label">
-                            Ads Spend Total ($)
+                            Ads Spend Total ($) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="ads_spend_total" name="ads_spend_total"
-                            placeholder="0.00" step="0.01" min="0">
+                            placeholder="0.00" step="0.01" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="ads_sales_total" class="form-label">
-                            Ads Sales Total ($)
+                            Ads Sales Total ($) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="ads_sales_total" name="ads_sales_total"
-                            placeholder="0.00" step="0.01" min="0">
+                            placeholder="0.00" step="0.01" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="ads_sales_today" class="form-label">
-                            Ads Sales Today ($)
+                            Ads Sales Today ($) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="ads_sales_today" name="ads_sales_today"
-                            placeholder="0.00" step="0.01" min="0">
+                            placeholder="0.00" step="0.01" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="acos" class="form-label">
-                            ACOS (%)
+                            ACOS (%) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="acos" name="acos" placeholder="0.00" step="0.01"
-                            min="0">
+                            min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="impressions" class="form-label">
-                            Impressions
+                            Impressions <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="impressions" name="impressions" placeholder="0"
-                            min="0">
+                            min="0" required>
                     </div>
                 </div>
             </div>
@@ -212,42 +222,42 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="shopify_click_throughs" class="form-label">
-                            Click-Throughs
+                            Click-Throughs <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="shopify_click_throughs"
-                            name="shopify_click_throughs" placeholder="0" min="0">
+                            name="shopify_click_throughs" placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="shopify_total_dpv" class="form-label">
-                            Total DPV
+                            Total DPV <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="shopify_total_dpv" name="shopify_total_dpv"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="shopify_total_atc" class="form-label">
-                            Total ATC
+                            Total ATC <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="shopify_total_atc" name="shopify_total_atc"
-                            placeholder="0" min="0">
+                            placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="shopify_total_purchases" class="form-label">
-                            Total Purchases
+                            Total Purchases <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="shopify_total_purchases"
-                            name="shopify_total_purchases" placeholder="0" min="0">
+                            name="shopify_total_purchases" placeholder="0" min="0" required>
                     </div>
 
                     <div class="form-group">
                         <label for="shopify_total_product_sales" class="form-label">
-                            Total Product Sales ($)
+                            Total Product Sales ($) <span class="required">*</span>
                         </label>
                         <input type="number" class="form-control" id="shopify_total_product_sales"
-                            name="shopify_total_product_sales" placeholder="0.00" step="0.01" min="0">
+                            name="shopify_total_product_sales" placeholder="0.00" step="0.01" min="0" required>
                     </div>
                 </div>
             </div>
@@ -626,5 +636,65 @@
             closeModal();
         }
     });
+
+    // Employee → Brand mapping
+    const employeeBrandMap = {
+        'Mai Phương': 'ENERZAA',
+        'Việt Khanh': 'LUVOST',
+        'Quỳnh Anh': 'PEAKSHILAJIT',
+        'Nhi (Boxoos)': 'BOXOOS',
+        'Thảo (Cyleox)': 'CYLEOX',
+        'Hoàng Thư': 'ROBURSTAGE',
+        'Diệu Anh': 'CHICADDONS',
+        'Uyên Vi': 'ORANIC EXTRACT',
+        'Phạm Thảo': 'ZOVOST',
+        'Lan Anh': 'VITALIXHAIR',
+        'Thảo Tiên': 'SYLIARIX'
+    };
+
+    // Brand → Products mapping
+    const brandProductsMap = {
+        'ENERZAA': ['Creatine Complex Gummies'],
+        'VITALIXHAIR': ['Vitalix Hair Oil (yellow)', 'Vitalix Hair Growth (pink)'],
+        'SYLIARIX': ['Brain Booster'],
+        'CHICADDONS': ['ChicAddOns Mullein'],
+        'CYLEOX': ['Night time fat burner', 'Balance Gummies'],
+        'ORANIC EXTRACT': ['Pure Shilajit Gummies', '3 in 1 Wellness Gummies'],
+        'LUVOST': ['Luvost Liquid Drops', 'Luvost Sea Moss'],
+        'BOXOOS': ['Estrogen Control'],
+        'ROBURSTAGE': ['Pure NMN'],
+        'PEAKSHILAJIT': ['SHILAJIT GUMMY PLATINUM'],
+        'ZOVOST': ['Super Blend']
+    };
+
+    function updateBrandAndProducts() {
+        const employeeName = document.getElementById('employee_name').value;
+        const brandInput = document.getElementById('brand');
+        const productSelect = document.getElementById('product');
+
+        // Clear product options
+        productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+
+        if (employeeName && employeeBrandMap[employeeName]) {
+            const brand = employeeBrandMap[employeeName];
+            brandInput.value = brand;
+
+            // Populate products for this brand
+            const products = brandProductsMap[brand] || [];
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product;
+                option.textContent = product;
+                productSelect.appendChild(option);
+            });
+
+            // Auto-select if only one product
+            if (products.length === 1) {
+                productSelect.value = products[0];
+            }
+        } else {
+            brandInput.value = '';
+        }
+    }
 </script>
 {% endblock %}
