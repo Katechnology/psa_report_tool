@@ -663,13 +663,13 @@ def export_csv():
     
     df = pd.DataFrame(data)
     
-    # Generate CSV
-    csv_data = df.to_csv(index=False)
+    # Generate CSV with UTF-8 BOM encoding for Vietnamese characters
+    csv_data = '\ufeff' + df.to_csv(index=False, encoding='utf-8-sig')
     
     # Return as downloadable file
     return Response(
-        csv_data,
-        mimetype='text/csv',
+        csv_data.encode('utf-8-sig'),
+        mimetype='text/csv; charset=utf-8-sig',
         headers={'Content-Disposition': 'attachment; filename=daily_reports_export.csv'}
     )
 
