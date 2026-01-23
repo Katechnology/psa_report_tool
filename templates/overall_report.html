@@ -75,6 +75,18 @@
                 <div id="chart-acos"></div>
             </div>
         </div>
+
+        <!-- Ranking Charts - Full Width -->
+        <h2 class="charts-title" style="margin-top: 2rem;">{{ selected_brand }} - Ranking Trends</h2>
+        <div class="chart-card-full">
+            <div id="chart-main-ranking"></div>
+        </div>
+        <div class="chart-card-full">
+            <div id="chart-sub-ranking"></div>
+        </div>
+        <div class="chart-card-full">
+            <div id="chart-impressions"></div>
+        </div>
     </div>
     {% elif selected_brand %}
     <div class="no-results">
@@ -113,6 +125,15 @@
 
     Plotly.newPlot('chart-acos', JSON.parse('{{ charts_json.acos | safe }}').data,
         JSON.parse('{{ charts_json.acos | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-main-ranking', JSON.parse('{{ charts_json.main_ranking | safe }}').data,
+        JSON.parse('{{ charts_json.main_ranking | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-sub-ranking', JSON.parse('{{ charts_json.sub_ranking | safe }}').data,
+        JSON.parse('{{ charts_json.sub_ranking | safe }}').layout, chartConfig);
+
+    Plotly.newPlot('chart-impressions', JSON.parse('{{ charts_json.impressions | safe }}').data,
+        JSON.parse('{{ charts_json.impressions | safe }}').layout, chartConfig);
 </script>
 {% endif %}
 {% endblock %}

@@ -35,7 +35,7 @@ EMPLOYEE_BRAND_MAP = {
 
 # Brand → Products mapping
 BRAND_PRODUCTS_MAP = {
-    'ENERZAA': ['Creatine Complex Gummies'],
+    'ENERZAA': ['Creatine Complex Gummies Blue Razz', 'Creatine Complex Gummies Sour Watermelon'],
     'VITALIXHAIR': ['Vitalix Hair Oil (yellow)', 'Vitalix Hair Growth (pink)'],
     'SYLIARIX': ['Brain Booster'],
     'CHICADDONS': ['ChicAddOns Mullein'],
@@ -842,6 +842,140 @@ def generate_brand_charts(reports, brand):
         yaxis_title='ACOS (%)'
     )
     charts['acos'] = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+    
+    # Main Niche Ranking - prepare table data
+    if 'product' in df.columns and df['product'].nunique() > 1:
+        # Multiple products - show table with product breakdown
+        ranking_df = df[['date', 'product', 'main_niche_ranking', 'sub_niche_ranking']].copy()
+        ranking_df = ranking_df.sort_values(['date', 'product'], ascending=[False, True])
+        ranking_df['date_str'] = ranking_df['date'].dt.strftime('%d/%m/%Y')
+        
+        # Create table figure
+        fig5 = px.scatter(ranking_df, x='date_str', y='main_niche_ranking',
+                         color='product',
+                         title=f'{brand} - Main Niche Ranking Over Time (by Product)',
+                         size_max=15)
+        fig5.update_traces(mode='lines+markers', marker=dict(size=10))
+        fig5.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Ranking',
+            yaxis={'autorange': 'reversed'},
+            height=500
+        )
+    else:
+        # Single product - show simple line chart
+        ranking_agg = df.groupby('date').agg({
+            'main_niche_ranking': 'first'
+        }).reset_index()
+        ranking_agg = ranking_agg.sort_values('date')
+        ranking_agg['date_str'] = ranking_agg['date'].dt.strftime('%d/%m/%Y')
+        
+        fig5 = px.scatter(ranking_agg, x='date_str', y='main_niche_ranking',
+                         title=f'{brand} - Main Niche Ranking Over Time',
+                         size_max=15)
+        fig5.update_traces(mode='lines+markers', marker=dict(size=10, color='#9b59b6'),
+                          line=dict(color='#9b59b6'))
+        fig5.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Ranking',
+            yaxis={'autorange': 'reversed'},
+            height=500
+        )
+    charts['main_ranking'] = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
+    
+    # Sub Niche Ranking
+    if 'product' in df.columns and df['product'].nunique() > 1:
+        # Multiple products
+        sub_ranking_df = df[['date', 'product', 'sub_niche_ranking']].copy()
+        sub_ranking_df = sub_ranking_df.sort_values(['date', 'product'], ascending=[False, True])
+        sub_ranking_df['date_str'] = sub_ranking_df['date'].dt.strftime('%d/%m/%Y')
+        
+        fig6 = px.scatter(sub_ranking_df, x='date_str', y='sub_niche_ranking',
+                         color='product',
+                         title=f'{brand} - Sub Niche Ranking Over Time (by Product)',
+                         size_max=15)
+        fig6.update_traces(mode='lines+markers', marker=dict(size=10))
+        fig6.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Ranking',
+            yaxis={'autorange': 'reversed'},
+            height=500
+        )
+    else:
+        # Single product
+        sub_ranking_agg = df.groupby('date').agg({
+            'sub_niche_ranking': 'first'
+        }).reset_index()
+        sub_ranking_agg = sub_ranking_agg.sort_values('date')
+        sub_ranking_agg['date_str'] = sub_ranking_agg['date'].dt.strftime('%d/%m/%Y')
+        
+        fig6 = px.scatter(sub_ranking_agg, x='date_str', y='sub_niche_ranking',
+                         title=f'{brand} - Sub Niche Ranking Over Time',
+                         size_max=15)
+        fig6.update_traces(mode='lines+markers', marker=dict(size=10, color='#e67e22'),
+                          line=dict(color='#e67e22'))
+        fig6.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Ranking',
+            yaxis={'autorange': 'reversed'},
+            height=500
+        )
+    charts['sub_ranking'] = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
+    
+    # Impressions over time (by product if multiple)
+    if 'product' in df.columns and df['product'].nunique() > 1:
+        # Multiple products
+        impressions_df = df[['date', 'product', 'impressions']].copy()
+        impressions_df = impressions_df.sort_values(['date', 'product'], ascending=[False, True])
+        impressions_df['date_str'] = impressions_df['date'].dt.strftime('%d/%m/%Y')
+        
+        fig7 = px.scatter(impressions_df, x='date_str', y='impressions',
+                         color='product',
+                         title=f'{brand} - Impressions Over Time (by Product)',
+                         size_max=15)
+        fig7.update_traces(mode='lines+markers', marker=dict(size=10))
+        fig7.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Impressions',
+            height=500
+        )
+    else:
+        # Single product
+        impressions_agg = df.groupby('date').agg({
+            'impressions': 'sum'
+        }).reset_index()
+        impressions_agg = impressions_agg.sort_values('date')
+        impressions_agg['date_str'] = impressions_agg['date'].dt.strftime('%d/%m/%Y')
+        
+        fig7 = px.scatter(impressions_agg, x='date_str', y='impressions',
+                         title=f'{brand} - Impressions Over Time',
+                         size_max=15)
+        fig7.update_traces(mode='lines+markers', marker=dict(size=10, color='#3498db'),
+                          line=dict(color='#3498db'))
+        fig7.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font_color='#ffffff',
+            xaxis_title='Date',
+            yaxis_title='Impressions',
+            height=500
+        )
+    charts['impressions'] = json.dumps(fig7, cls=plotly.utils.PlotlyJSONEncoder)
     
     return charts
 
